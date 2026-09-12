@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send, Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
 import { HOTEL_INFO } from '../data/hotelData';
+import { sendBookingInquiry } from '../services/inquiryService';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
+      await sendBookingInquiry({
+        source: 'Footer Newsletter & Offers Subscription',
+        guestName: 'Newsletter Subscriber',
+        guestPhone: 'N/A',
+        guestEmail: email.trim(),
+        specialRequests: 'Subscriber requested updates on seasonal tariffs and heritage packages.',
+        enquiryType: 'Newsletter Subscription',
+      });
       setSubscribed(true);
       setEmail('');
     }

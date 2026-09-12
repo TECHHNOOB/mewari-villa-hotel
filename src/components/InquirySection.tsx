@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { HOTEL_INFO } from '../data/hotelData';
 import { InquiryFormData, EnquiryType } from '../types';
+import { sendBookingInquiry } from '../services/inquiryService';
 
 interface InquirySectionProps {
   preselectedRoom?: string;
@@ -69,7 +70,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
     setErrorMsg('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName.trim()) {
       setErrorMsg('Please enter your full name.');
@@ -81,11 +82,23 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      setErrorMsg('');
-    }, 600);
+
+    await sendBookingInquiry({
+      source: 'Plan Your Stay Form (Main Page)',
+      guestName: formData.fullName,
+      guestPhone: formData.phone,
+      guestEmail: formData.email,
+      roomPreference: formData.roomPreference,
+      checkInDate: formData.checkIn,
+      checkOutDate: formData.checkOut,
+      guestCount: `${formData.adults}, ${formData.children}`,
+      specialRequests: formData.message,
+      enquiryType: formData.enquiryType,
+    });
+
+    setLoading(false);
+    setSubmitted(true);
+    setErrorMsg('');
   };
 
   const generateWhatsAppUrl = () => {

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { HOTEL_INFO } from '../data/hotelData';
 import { InquiryFormData } from '../types';
+import { sendBookingInquiry } from '../services/inquiryService';
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -84,7 +85,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
     setErrorMsg('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName.trim()) {
       setErrorMsg('Please enter your full name.');
@@ -96,11 +97,23 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      setErrorMsg('');
-    }, 600);
+
+    await sendBookingInquiry({
+      source: 'Quick Inquiry Modal',
+      guestName: formData.fullName,
+      guestPhone: formData.phone,
+      guestEmail: formData.email,
+      roomPreference: formData.roomPreference,
+      checkInDate: formData.checkIn,
+      checkOutDate: formData.checkOut,
+      guestCount: `${formData.adults}, ${formData.children}`,
+      specialRequests: formData.message,
+      enquiryType: 'Quick Modal Reservation',
+    });
+
+    setLoading(false);
+    setSubmitted(true);
+    setErrorMsg('');
   };
 
   const generateWhatsAppUrl = () => {

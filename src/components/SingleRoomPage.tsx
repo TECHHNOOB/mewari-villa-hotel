@@ -31,7 +31,8 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Room } from '../types';
-import { ROOMS, HOTEL_INFO, REAL_HOTEL_IMAGES } from '../data/hotelData';
+import { ROOMS, HOTEL_INFO } from '../data/hotelData';
+import { sendBookingInquiry } from '../services/inquiryService';
 
 interface SingleRoomPageProps {
   roomId: string;
@@ -61,6 +62,7 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
   const [guestCount, setGuestCount] = useState('2 Guests');
   const [guestMessage, setGuestMessage] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Scroll to top when room changes
@@ -113,21 +115,25 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
     setTimeout(() => setCopiedLink(false), 2200);
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    await sendBookingInquiry({
+      source: `Single Room Page (${room.name})`,
+      guestName: guestName,
+      guestPhone: guestPhone,
+      guestEmail: guestEmail,
+      roomPreference: room.name,
+      checkInDate: checkInDate,
+      checkOutDate: checkOutDate,
+      guestCount: guestCount,
+      specialRequests: guestMessage,
+      enquiryType: 'Suite Reservation',
+    });
+
+    setIsSubmitting(false);
     setFormSubmitted(true);
-
-    const messageText = `Reservation Request for ${room.name}
-Guest: ${guestName || 'Guest'}
-Phone: +91 ${guestPhone || 'Not provided'}
-Email: ${guestEmail || 'Not provided'}
-Check-in: ${checkInDate || 'Flexible'}
-Check-out: ${checkOutDate || 'Flexible'}
-Guests: ${guestCount}
-Message: ${guestMessage || 'Please share tariff & availability details.'}`;
-
-    const waUrl = `https://wa.me/${HOTEL_INFO.whatsappNumber}?text=${encodeURIComponent(messageText)}`;
-    window.open(waUrl, '_blank');
   };
 
   const generateDirectWhatsAppUrl = () => {
@@ -550,20 +556,31 @@ Please let me know room availability and best direct booking tariff.`;
               </p>
 
               {formSubmitted ? (
-                <div className="p-4 bg-[#FAF8F5] border border-[#C59B51]/40 rounded-xl text-center space-y-2">
-                  <CheckCircle2 className="w-8 h-8 text-[#C59B51] mx-auto" />
-                  <p className="text-xs font-sans font-medium text-[#171717]">
-                    Inquiry opened on WhatsApp!
+                <div className="p-5 bg-[#FAF8F5] border border-[#C59B51]/40 rounded-xl text-center space-y-3 animate-fadeIn">
+                  <CheckCircle2 className="w-10 h-10 text-[#C59B51] mx-auto" />
+                  <h4 className="font-serif text-base font-semibold text-[#171717]">
+                    Inquiry Sent Successfully!
+                  </h4>
+                  <p className="text-xs font-sans text-[#525252] leading-relaxed">
+                    Your reservation details for <strong>{room.name}</strong> have been forwarded to our reservations team. We will review room availability and contact you shortly.
                   </p>
-                  <p className="text-[11px] text-[#737373]">
-                    Our front desk concierge will confirm availability instantly.
-                  </p>
-                  <button
-                    onClick={() => setFormSubmitted(false)}
-                    className="text-[11px] text-[#C59B51] underline font-medium pt-1"
-                  >
-                    Send another inquiry
-                  </button>
+                  <div className="pt-2 space-y-2">
+                    <a
+                      href={generateDirectWhatsAppUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg text-xs font-sans font-medium flex items-center justify-center space-x-2 transition-colors shadow-xs"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Also Message on WhatsApp</span>
+                    </a>
+                    <button
+                      onClick={() => setFormSubmitted(false)}
+                      className="text-[11px] text-[#737373] hover:text-[#171717] underline font-medium pt-1 block mx-auto"
+                    >
+                      Submit another inquiry
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleFormSubmit} className="space-y-3">
@@ -682,10 +699,20 @@ Please let me know room availability and best direct booking tariff.`;
                   {/* Submit Button (Get in touch -> style from reference) */}
                   <button
                     type="submit"
-                    className="w-full py-3 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg shadow-sm transition-all text-center flex items-center justify-center space-x-1.5 active:scale-98 mt-2"
+                    disabled={isSubmitting}
+                    className="w-full py-3 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg shadow-sm transition-all text-center flex items-center justify-center space-x-2 active:scale-98 mt-2 disabled:opacity-75 cursor-pointer"
                   >
-                    <span>Get in touch</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Sending Inquiry...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Get in touch</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
                   </button>
 
                   {/* WhatsApp Quick Chat */}
