@@ -1,7 +1,7 @@
 // Centralized Email Inquiry Dispatch Service
-// Dispatches all hotel booking inquiries to techhnoob@gmail.com in a beautifully formatted HTML table
+// Dispatches all hotel booking inquiries securely using FormSubmit token
 
-export const HOTEL_INQUIRY_EMAIL = 'techhnoob@gmail.com';
+export const FORMSUBMIT_TOKEN = 'fd8d81ad71a957fdfc1bb6eff8ca961d';
 
 export interface BookingInquiryData {
   source: string; // e.g. "Single Room Page (Villa Suite)", "Main Page Plan Your Stay", "Quick Inquiry Modal"
@@ -53,7 +53,7 @@ export async function sendBookingInquiry(data: BookingInquiryData): Promise<Inqu
   }
 
   try {
-    const response = await fetch(`https://formsubmit.co/ajax/${HOTEL_INQUIRY_EMAIL}`, {
+    const response = await fetch(`https://formsubmit.co/ajax/${FORMSUBMIT_TOKEN}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
