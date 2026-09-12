@@ -4,6 +4,7 @@ import { REAL_HOTEL_IMAGES } from '../data/hotelData';
 
 interface VillaSuiteFeatureProps {
   onEnquireSuite: () => void;
+  onViewRoomPage?: (roomId: string) => void;
 }
 
 // Verified real guest reviews from Google & TripAdvisor
@@ -60,7 +61,7 @@ const GUEST_REVIEWS = [
   },
 ];
 
-export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireSuite }) => {
+export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireSuite, onViewRoomPage }) => {
   const [currentReview, setCurrentReview] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -216,13 +217,24 @@ export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireS
                 Curated royal experiences, personalized dining setups, and private lake boat charters handpicked for your itinerary.
               </p>
 
-              <button
-                onClick={onEnquireSuite}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all shadow-xs mb-6"
-              >
-                <span>Explore Packages</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                {onViewRoomPage && (
+                  <button
+                    onClick={() => onViewRoomPage('villa-suite-lake-view')}
+                    className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#171717] hover:bg-[#2A2A2A] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all shadow-xs"
+                  >
+                    <span>View Suite Details</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#C59B51]" />
+                  </button>
+                )}
+                <button
+                  onClick={onEnquireSuite}
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all shadow-xs"
+                >
+                  <span>Explore Packages</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
             {/* 3 Mini Privileges with Icons */}

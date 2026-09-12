@@ -87,12 +87,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry, onExploreVilla }) => 
               transition={{ duration: 0.6 }}
               className="inline-flex items-center space-x-3 mb-4"
             >
-              <img
+              {/* <img
                 src="/mewari-villa-emblem.png"
                 alt="Hotel Mewari Villa Emblem"
                 className="h-8 w-auto object-contain"
-              />
-              <span className="h-px w-6 bg-[#C59B51]" />
+              /> */}
+              {/* <span className="h-px w-6 bg-[#C59B51]" /> */}
               <span className="font-serif text-xs tracking-[0.22em] text-[#C59B51] uppercase font-semibold">
                 A Royal Heritage Sanctuary · Udaipur
               </span>
@@ -171,11 +171,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry, onExploreVilla }) => 
                     <button
                       key={slide.id}
                       onClick={() => setCurrentSlide(idx)}
-                      className={`relative rounded-xl overflow-hidden aspect-[16/10] border-2 transition-all duration-300 text-left group ${
-                        isActive
-                          ? 'border-[#C59B51] shadow-md ring-2 ring-[#C59B51]/30 scale-[1.02]'
-                          : 'border-transparent opacity-65 hover:opacity-100 hover:border-[#D5CABE]'
-                      }`}
+                      className={`relative rounded-xl overflow-hidden aspect-[16/10] border-2 transition-all duration-300 text-left group ${isActive
+                        ? 'border-[#C59B51] shadow-md ring-2 ring-[#C59B51]/30 scale-[1.02]'
+                        : 'border-transparent opacity-65 hover:opacity-100 hover:border-[#D5CABE]'
+                        }`}
                     >
                       <img
                         src={slide.url}

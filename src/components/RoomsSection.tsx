@@ -6,9 +6,10 @@ import { RoomModal } from './RoomModal';
 
 interface RoomsSectionProps {
   onEnquireRoom: (roomName: string) => void;
+  onViewRoomPage?: (roomId: string) => void;
 }
 
-export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom }) => {
+export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom, onViewRoomPage }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
 
@@ -60,7 +61,7 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom }) => 
             return (
               <div
                 key={room.id}
-                onClick={() => setSelectedRoom(room)}
+                onClick={() => (onViewRoomPage ? onViewRoomPage(room.id) : setSelectedRoom(room))}
                 className="group cursor-pointer bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden shadow-xs hover:shadow-xl hover:border-[#D5CABE] transition-all duration-300 flex flex-col justify-between"
               >
                 {/* Image Container with Badge & Heart */}
@@ -97,6 +98,9 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom }) => 
                       <h3 className="font-serif text-lg font-medium text-[#171717] group-hover:text-[#C59B51] transition-colors leading-snug">
                         {room.name}
                       </h3>
+                      <span className="text-[11px] text-[#C59B51] font-sans font-medium group-hover:underline">
+                        View Page →
+                      </span>
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
@@ -143,10 +147,14 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom }) => 
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedRoom(room);
+                      if (onViewRoomPage) {
+                        onViewRoomPage(room.id);
+                      } else {
+                        setSelectedRoom(room);
+                      }
                     }}
-                    className="p-2.5 border border-[#EAE4D9] hover:border-[#C59B51] text-[#171717] rounded-lg transition-colors flex items-center justify-center"
-                    title="View details"
+                    className="p-2.5 border border-[#EAE4D9] hover:border-[#C59B51] hover:bg-[#FAF8F5] text-[#171717] rounded-lg transition-colors flex items-center justify-center"
+                    title="View single room page"
                   >
                     <Eye className="w-4 h-4" />
                   </button>

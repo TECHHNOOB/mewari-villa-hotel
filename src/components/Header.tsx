@@ -4,9 +4,10 @@ import { HOTEL_INFO } from '../data/hotelData';
 
 interface HeaderProps {
   onOpenEnquiry: (room?: string) => void;
+  onNavigateHome?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -30,8 +31,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry }) => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
+    if (onNavigateHome) {
+      onNavigateHome();
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.querySelector(href);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -46,7 +55,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry }) => {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
 
           {/* Official Hotel Mewari Villa Logo */}
-          <a href="#" id="header-brand-logo" className="group flex items-center focus:outline-hidden py-1">
+          <a
+            href="#"
+            id="header-brand-logo"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigateHome) onNavigateHome();
+              else window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="group flex items-center focus:outline-hidden py-1"
+          >
             <img
               src="/mewari-villa-logo.png"
               alt="Hotel Mewari Villa"
