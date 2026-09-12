@@ -91,21 +91,13 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
     'deluxe-non-lake-view': 'TRANQUIL HERITAGE CHARM',
   };
 
-  // Compile full gallery ensuring at least 4 photos for the mockup grid
-  const allPhotos: string[] = Array.from(
-    new Set([
-      ...(room.gallery || []),
-      room.image,
-      REAL_HOTEL_IMAGES.lakeViewRooftop,
-      REAL_HOTEL_IMAGES.propertyCourtyard,
-      REAL_HOTEL_IMAGES.heritageFacade,
-    ])
-  );
+  // Strictly show only photos belonging to this specific room (no other hotel photos)
+  const allPhotos: string[] = room.gallery && room.gallery.length > 0 ? room.gallery : [room.image];
 
   const primaryHeroPhoto = allPhotos[0] || room.image;
-  const topLandscapePhoto = allPhotos[1] || REAL_HOTEL_IMAGES.lakeViewRooftop;
-  const bottomLeftPhoto = allPhotos[2] || REAL_HOTEL_IMAGES.propertyCourtyard;
-  const bottomRightPhoto = allPhotos[3] || REAL_HOTEL_IMAGES.heritageFacade;
+  const topLandscapePhoto = allPhotos[1] || allPhotos[0];
+  const bottomLeftPhoto = allPhotos[2] || allPhotos[1] || allPhotos[0];
+  const bottomRightPhoto = allPhotos[3] || allPhotos[allPhotos.length - 1];
 
   const handlePrevPhoto = () => {
     setActiveImageIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length);
