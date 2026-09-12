@@ -135,7 +135,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry, onExploreVilla }) => 
                 onClick={onOpenEnquiry}
                 className="inline-flex items-center space-x-3 px-6 py-3.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
               >
-                <span>Schedule a Private Stay</span>
+                <span>Book Your Stay</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
 

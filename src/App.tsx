@@ -64,17 +64,14 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Smooth scroll handler for in-page navigation or opening modal
+  // Open popup modal on all Book Stay / Reserve clicks
   const handleOpenEnquiry = (roomName?: string) => {
     if (roomName) {
       setPreselectedRoom(roomName);
-    }
-    const inquiryEl = document.getElementById('inquiry-section');
-    if (inquiryEl) {
-      inquiryEl.scrollIntoView({ behavior: 'smooth' });
     } else {
-      setInquiryModalOpen(true);
+      setPreselectedRoom('Any Room');
     }
+    setInquiryModalOpen(true);
   };
 
   const handleExploreVilla = () => {

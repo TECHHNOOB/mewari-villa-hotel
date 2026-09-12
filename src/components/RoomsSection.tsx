@@ -85,9 +85,8 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom, onVie
                       className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#404040] hover:text-rose-500 transition-colors shadow-xs"
                     >
                       <Heart
-                        className={`w-4 h-4 transition-transform active:scale-125 ${
-                          isFav ? 'fill-rose-500 text-rose-500' : ''
-                        }`}
+                        className={`w-4 h-4 transition-transform active:scale-125 ${isFav ? 'fill-rose-500 text-rose-500' : ''
+                          }`}
                       />
                     </button>
                   </div>
@@ -98,9 +97,9 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom, onVie
                       <h3 className="font-serif text-lg font-medium text-[#171717] group-hover:text-[#C59B51] transition-colors leading-snug">
                         {room.name}
                       </h3>
-                      <span className="text-[11px] text-[#C59B51] font-sans font-medium group-hover:underline">
+                      {/* <span className="text-[11px] text-[#C59B51] font-sans font-medium group-hover:underline">
                         View Page →
-                      </span>
+                      </span> */}
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
@@ -142,7 +141,7 @@ export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom, onVie
                     }}
                     className="flex-1 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-[11px] uppercase tracking-wider font-sans font-semibold rounded-lg transition-colors text-center"
                   >
-                    Reserve
+                    Book Stay
                   </button>
                   <button
                     onClick={(e) => {
