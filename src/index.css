@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg:           #FFFFFF;
+    --color-surface:      #FAF8F5;
+    --color-surface-2:    #F5F0E8;
+    --color-surface-3:    #EAE4D9;
+    --color-gold:         #C59B51;
+    --color-gold-light:   #DFC088;
+    --color-gold-dark:    #A77E36;
+    --color-text:         #171717;
+    --color-text-muted:   #666666;
+    --color-text-dim:     #999999;
+    --color-border:       #EAE4D9;
+    --color-border-light: #F2ECE1;
+
+    --font-heading: 'Forum', Georgia, serif;
+    --font-forum:   'Forum', Georgia, serif;
+    --font-serif:   'Forum', Georgia, serif;
+    --font-lora:    'Lora', Georgia, serif;
+    --font-body:    'Lora', Georgia, serif;
+    --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  html {
+    background-color: #FFFFFF;
+    color: #171717;
+  }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background-color: #FFFFFF;
+    color: #171717;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Forum', Georgia, serif;
+    color: #171717;
+  }
+
+  p {
+    font-family: 'Lora', Georgia, serif;
+  }
+}
+
+h1, h2, h3, h4, h5, h6,
+.font-serif,
+.font-forum,
+.font-heading {
+  font-family: 'Forum', Georgia, serif;
+}
+
+p,
+.font-lora,
+.font-body {
+  font-family: 'Lora', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #A77E36 0%, #C59B51 50%, #DFC088 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8CEBE;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C59B51;
+}

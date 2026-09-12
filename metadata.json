@@ -1,0 +1,6 @@
+{
+  "name": "Mewari Villa Hotel",
+  "description": "Luxury Heritage Lake View Hotel overlooking Lake Pichola in Udaipur, Rajasthan, India.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
