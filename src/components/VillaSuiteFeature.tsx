@@ -1,13 +1,87 @@
-import React, { useState } from 'react';
-import { ArrowRight, Play, Shield, Sun, Compass, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, ArrowLeft, Play, Shield, Sun, Compass, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { REAL_HOTEL_IMAGES } from '../data/hotelData';
 
 interface VillaSuiteFeatureProps {
   onEnquireSuite: () => void;
 }
 
+// Verified real guest reviews from Google & TripAdvisor
+const GUEST_REVIEWS = [
+  {
+    id: 1,
+    name: 'Suman Khadka Chhetry',
+    source: 'Google Review',
+    time: '4 months ago',
+    rating: 5,
+    avatarText: 'SK',
+    review:
+      'We had a wonderful stay at this hotel. Rooms are spacious, clean and friendly staffs. The breakfast was good. Location wise it is at the centre, where the City Palace, Ambrai Ghat, Bagore ki Haveli, etc all are at walking distance. Overall we had wonderful stay and thanks to the owner who is extremely friendly.',
+  },
+  {
+    id: 2,
+    name: 'Verified Guest',
+    source: 'Google Review',
+    time: '1 month ago',
+    rating: 5,
+    avatarText: 'VG',
+    review:
+      'This was my last stay which I opted for after staying in 2 different properties and I must say it was THE best. Everything is walking distance from the property like Gangaur Ghat, Jagdish Temple, Hathipole Bazar, Bada Bazar and yet you will experience absolute peace.',
+  },
+  {
+    id: 3,
+    name: 'NorthStar Traveller',
+    source: 'Tripadvisor Review',
+    time: '5 months ago',
+    rating: 5,
+    avatarText: 'NT',
+    review:
+      'We stayed at Mewari Villa in Udaipur for 2 nights, and it was a wonderful experience. The hotel was very well maintained and extremely clean. The room service was excellent and very prompt. The rooftop restaurant was beautiful, offering a stunning panoramic view.',
+  },
+  {
+    id: 4,
+    name: 'Dipesh Akhare',
+    source: 'Google Review',
+    time: '6 months ago',
+    rating: 5,
+    avatarText: 'DA',
+    review:
+      'Outstanding Stay at Mewari Villa – Perfect Location & Value! I had a wonderful stay at Hotel Mewari Villa. It offers a perfect blend of heritage charm, exceptional cleanliness, lakefront proximity, and outstanding value.',
+  },
+  {
+    id: 5,
+    name: 'Shubham Banawal',
+    source: 'Google Local Guide',
+    time: '2 months ago',
+    rating: 5,
+    avatarText: 'SB',
+    review:
+      'Honest review. After all reviews, they have improved their services. They are really good now. I have specially tipped them. Rooms are good, hospitality is warm, and the location is unmatched.',
+  },
+];
+
 export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireSuite }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentReview, setCurrentReview] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Auto-advance reviews every 7.5 seconds
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setCurrentReview((prev) => (prev + 1) % GUEST_REVIEWS.length);
+    }, 7500);
+    return () => clearInterval(timer);
+  }, [isHovered]);
+
+  const handlePrevReview = () => {
+    setCurrentReview((prev) => (prev - 1 + GUEST_REVIEWS.length) % GUEST_REVIEWS.length);
+  };
+
+  const handleNextReview = () => {
+    setCurrentReview((prev) => (prev + 1) % GUEST_REVIEWS.length);
+  };
+
+  const activeReview = GUEST_REVIEWS[currentReview];
 
   return (
     <section className="py-20 md:py-24 bg-white border-b border-[#EAE4D9]">
@@ -15,44 +89,67 @@ export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireS
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-          {/* Left Column: What Our Guests Say (4 cols) */}
-          <div className="lg:col-span-4 bg-[#FAF8F5] rounded-2xl p-7 border border-[#EAE4D9] flex flex-col justify-between h-full shadow-xs">
+          {/* Left Column: What Our Guests Say with Real Google/TripAdvisor Reviews (4 cols) */}
+          <div
+            className="lg:col-span-4 bg-[#FAF8F5] rounded-2xl p-7 border border-[#EAE4D9] flex flex-col justify-between h-full shadow-xs transition-all"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             <div>
-              <div className="flex items-center space-x-2 text-[#C59B51] mb-3">
-                <span className="text-[10px] font-sans uppercase tracking-widest font-semibold">Guest Impressions</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2 text-[#C59B51]">
+                  <span className="text-[10px] font-sans uppercase tracking-widest font-semibold">Guest Impressions</span>
+                </div>
+                {/* Previous & Next arrow buttons */}
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={handlePrevReview}
+                    className="w-7 h-7 rounded-full bg-white border border-[#EAE4D9] flex items-center justify-center text-[#171717] hover:bg-[#C59B51] hover:text-white hover:border-[#C59B51] transition-colors shadow-xs"
+                    aria-label="Previous review"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={handleNextReview}
+                    className="w-7 h-7 rounded-full bg-white border border-[#EAE4D9] flex items-center justify-center text-[#171717] hover:bg-[#C59B51] hover:text-white hover:border-[#C59B51] transition-colors shadow-xs"
+                    aria-label="Next review"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-              <h3 className="font-serif text-2xl font-normal text-[#171717] mb-4">
+
+              <h3 className="font-serif text-2xl font-normal text-[#171717] mb-3">
                 What Our Guests Say
               </h3>
 
               {/* Large Gold Quote Mark */}
-              <div className="font-serif text-5xl text-[#C59B51] leading-none mb-3 font-italic select-none">
+              <div className="font-serif text-5xl text-[#C59B51] leading-none mb-2 font-italic select-none">
                 “
               </div>
 
-              <p className="text-xs sm:text-sm font-body text-[#525252] leading-relaxed mb-6">
-                From our first evening watching sunset from the rooftop to the quiet comfort of the lake-view suite, Mewari Villa provided unmatched warmth and authentic royal hospitality. Truly a memorable Udaipur experience.
+              {/* Review Text */}
+              <p className="text-xs sm:text-sm font-body text-[#404040] leading-relaxed min-h-[110px] mb-6">
+                {activeReview.review}
               </p>
             </div>
 
             <div>
               <div className="flex items-center space-x-3 pt-4 border-t border-[#EAE4D9]">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EAE4D9] border border-white shadow-xs">
-                  <img
-                    src={REAL_HOTEL_IMAGES.propertyCourtyard}
-                    alt="Michael Thompson"
-                    className="w-full h-full object-cover"
-                  />
+                {/* Avatar with initials */}
+                <div className="w-10 h-10 rounded-full bg-[#EAE4D9] border border-white flex items-center justify-center text-[#171717] font-serif font-bold text-xs shadow-xs shrink-0">
+                  {activeReview.avatarText}
                 </div>
-                <div>
-                  <h4 className="font-serif text-sm font-semibold text-[#171717]">
-                    Michael &amp; Sarah Thompson
+
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-serif text-sm font-semibold text-[#171717] truncate">
+                    {activeReview.name}
                   </h4>
-                  <div className="flex items-center space-x-1 text-[10px] font-sans text-[#737373]">
-                    <span>London, UK</span>
+                  <div className="flex items-center space-x-1.5 text-[10px] font-sans text-[#737373]">
+                    <span>{activeReview.source}</span>
                     <span>•</span>
                     <div className="flex text-amber-500">
-                      {[...Array(5)].map((_, i) => (
+                      {[...Array(activeReview.rating)].map((_, i) => (
                         <Star key={i} className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
                       ))}
                     </div>
@@ -62,9 +159,18 @@ export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireS
 
               {/* Carousel Indicator Dots */}
               <div className="mt-5 flex items-center space-x-1.5">
-                <div className="w-4 h-1 bg-[#C59B51] rounded-full" />
-                <div className="w-1.5 h-1 bg-[#D8CEBE] rounded-full" />
-                <div className="w-1.5 h-1 bg-[#D8CEBE] rounded-full" />
+                {GUEST_REVIEWS.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentReview(idx)}
+                    className={`transition-all duration-300 rounded-full ${
+                      currentReview === idx
+                        ? 'w-5 h-1 bg-[#C59B51]'
+                        : 'w-1.5 h-1 bg-[#D8CEBE] hover:bg-[#C59B51]/60'
+                    }`}
+                    aria-label={`Go to review ${idx + 1}`}
+                  />
+                ))}
               </div>
             </div>
           </div>
