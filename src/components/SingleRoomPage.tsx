@@ -22,6 +22,13 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Camera,
+  Share2,
+  Heart,
+  Star,
+  Compass,
+  Utensils,
+  CheckCircle2,
 } from 'lucide-react';
 import { Room } from '../types';
 import { ROOMS, HOTEL_INFO, REAL_HOTEL_IMAGES } from '../data/hotelData';
@@ -42,15 +49,38 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
   const room = ROOMS.find((r) => r.id === roomId) || ROOMS[0];
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // Form State
+  const [guestName, setGuestName] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
   const [guestCount, setGuestCount] = useState('2 Guests');
+  const [guestMessage, setGuestMessage] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(true);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Scroll to top when room changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setActiveImageIndex(0);
+    setFormSubmitted(false);
   }, [roomId]);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowLeft') handlePrevPhoto();
+      if (e.key === 'ArrowRight') handleNextPhoto();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen]);
 
   const otherRooms = ROOMS.filter((r) => r.id !== room.id);
 
@@ -61,456 +91,706 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
     'deluxe-non-lake-view': 'TRANQUIL HERITAGE CHARM',
   };
 
-  const generateWhatsAppBookingUrl = () => {
+  // Compile full gallery ensuring at least 4 photos for the mockup grid
+  const allPhotos: string[] = Array.from(
+    new Set([
+      ...(room.gallery || []),
+      room.image,
+      REAL_HOTEL_IMAGES.lakeViewRooftop,
+      REAL_HOTEL_IMAGES.propertyCourtyard,
+      REAL_HOTEL_IMAGES.heritageFacade,
+    ])
+  );
+
+  const primaryHeroPhoto = allPhotos[0] || room.image;
+  const topLandscapePhoto = allPhotos[1] || REAL_HOTEL_IMAGES.lakeViewRooftop;
+  const bottomLeftPhoto = allPhotos[2] || REAL_HOTEL_IMAGES.propertyCourtyard;
+  const bottomRightPhoto = allPhotos[3] || REAL_HOTEL_IMAGES.heritageFacade;
+
+  const handlePrevPhoto = () => {
+    setActiveImageIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length);
+  };
+
+  const handleNextPhoto = () => {
+    setActiveImageIndex((prev) => (prev + 1) % allPhotos.length);
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2200);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormSubmitted(true);
+
+    const messageText = `Reservation Request for ${room.name}
+Guest: ${guestName || 'Guest'}
+Phone: +91 ${guestPhone || 'Not provided'}
+Email: ${guestEmail || 'Not provided'}
+Check-in: ${checkInDate || 'Flexible'}
+Check-out: ${checkOutDate || 'Flexible'}
+Guests: ${guestCount}
+Message: ${guestMessage || 'Please share tariff & availability details.'}`;
+
+    const waUrl = `https://wa.me/${HOTEL_INFO.whatsappNumber}?text=${encodeURIComponent(messageText)}`;
+    window.open(waUrl, '_blank');
+  };
+
+  const generateDirectWhatsAppUrl = () => {
     const text = `Hello Mewari Villa Hotel,
-I would like to inquire regarding reserving the ${room.name}.
+I would like to enquire about reserving the ${room.name} (${room.startingPrice}/night).
 Dates: ${checkInDate || 'Flexible'} to ${checkOutDate || 'Flexible'}
 Guests: ${guestCount}
-Tariff: ${room.startingPrice} per night
-
-Please let me know room availability and reservation details.`;
+Please let me know room availability and best direct booking tariff.`;
 
     return `https://wa.me/${HOTEL_INFO.whatsappNumber}?text=${encodeURIComponent(text)}`;
   };
 
-  const handlePrevPhoto = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveImageIndex((prev) => (prev - 1 + room.gallery.length) % room.gallery.length);
-  };
-
-  const handleNextPhoto = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveImageIndex((prev) => (prev + 1) % room.gallery.length);
-  };
-
   return (
-    <div className="pt-24 pb-24 bg-white text-[#171717] min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 pb-24 bg-white text-[#171717] min-h-screen selection:bg-[#C59B51]/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* 1. Breadcrumbs & Back Navigation */}
-        <div className="flex items-center justify-between py-4 mb-6 border-b border-[#EAE4D9]">
-          <div className="flex items-center space-x-2 text-xs font-sans text-[#737373]">
+        {/* 1. Breadcrumbs (Exact reference style: Buy > Lagos Villas > ...) */}
+        <div className="flex items-center justify-between py-3 mb-4 text-xs font-sans text-[#737373]">
+          <div className="flex items-center space-x-2 overflow-hidden truncate">
             <button
               onClick={onBack}
-              className="hover:text-[#C59B51] transition-colors flex items-center space-x-1"
+              className="hover:text-[#C59B51] transition-colors flex items-center shrink-0"
             >
-              <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-              <span>All Accommodations</span>
+              <span>Hotel Mewari Villa</span>
             </button>
-            <span>/</span>
-            <span className="text-[#171717] font-medium">{room.name}</span>
+            <span>&gt;</span>
+            <button
+              onClick={onBack}
+              className="hover:text-[#C59B51] transition-colors shrink-0"
+            >
+              <span>Accommodations</span>
+            </button>
+            <span>&gt;</span>
+            <span className="shrink-0">Lake Pichola Heritage</span>
+            <span>&gt;</span>
+            <span className="text-[#171717] font-medium truncate">{room.name}</span>
           </div>
 
           <button
             onClick={onBack}
-            className="hidden sm:inline-flex items-center space-x-2 px-4 py-2 border border-[#EAE4D9] hover:border-[#C59B51] text-xs font-sans font-medium rounded-lg transition-colors text-[#525252] hover:text-[#171717]"
+            className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 border border-[#EAE4D9] hover:border-[#C59B51] text-xs font-sans font-medium rounded-lg transition-colors text-[#525252] hover:text-[#171717] shrink-0 ml-4"
           >
-            <span>← Back to Hotel Home</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to All Rooms</span>
           </button>
         </div>
 
-        {/* 2. Room Title, Subtitle & Rating */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-2 mb-2">
-              <span className="px-3 py-1 bg-[#FAF8F5] border border-[#C59B51]/40 text-[#C59B51] text-[10px] font-sans font-semibold uppercase tracking-wider rounded-md">
-                {badges[room.id] || 'ROYAL ACCOMMODATION'}
-              </span>
-              <span className="text-xs font-sans text-[#737373] flex items-center">
-                <MapPin className="w-3.5 h-3.5 text-[#C59B51] mr-1" />
-                {room.view}
-              </span>
-            </div>
+        {/* 2. Photo Gallery Showcase (Exact arrangement requested by user) */}
+        {/* Left: 1 large hero image | Right: 1 top wide + 2 bottom split with "See all X photos" pill */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-3.5 mb-8">
 
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#171717] leading-tight">
-              {room.name}
-            </h1>
-            <p className="font-serif italic text-base sm:text-lg text-[#666666] mt-1.5">
-              &ldquo;{room.tagline}&rdquo;
-            </p>
-          </div>
-
-          <div className="md:text-right shrink-0">
-            <span className="text-xs text-[#737373] font-sans uppercase tracking-wider block">
-              Tariff Starting From
-            </span>
-            <div className="flex items-baseline md:justify-end space-x-1">
-              <span className="font-serif text-3xl sm:text-4xl font-bold text-[#171717]">
-                {room.startingPrice}
-              </span>
-              <span className="text-xs text-[#737373] font-sans">/ night + taxes</span>
-            </div>
-            <p className="text-[11px] text-[#C59B51] font-sans font-medium mt-0.5">
-              ✓ Direct Booking Guarantee · No Hidden Fees
-            </p>
-          </div>
-        </div>
-
-        {/* 3. Luxury Photo Showcase Mosaic */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-10">
-          {/* Main Large Hero Image (8 cols) */}
+          {/* LEFT: 1 Large Hero Image (7 cols out of 12) */}
           <div
-            onClick={() => setLightboxOpen(true)}
-            className="md:col-span-8 relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group shadow-md border border-[#EAE4D9] bg-[#FAF8F5]"
+            onClick={() => {
+              setActiveImageIndex(0);
+              setLightboxOpen(true);
+            }}
+            className="lg:col-span-7 relative h-[320px] sm:h-[420px] md:h-[480px] lg:h-[500px] rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-xs border border-[#EAE4D9] bg-[#FAF8F5]"
           >
             <img
-              src={room.gallery[activeImageIndex] || room.image}
-              alt={`${room.name} primary photograph`}
+              src={primaryHeroPhoto}
+              alt={`${room.name} master suite photograph`}
               className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-            <button
-              onClick={handlePrevPhoto}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-[#C59B51] hover:text-white flex items-center justify-center text-[#171717] transition-colors shadow-md"
-              aria-label="Previous photograph"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={handleNextPhoto}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-[#C59B51] hover:text-white flex items-center justify-center text-[#171717] transition-colors shadow-md"
-              aria-label="Next photograph"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-
-            <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-xs text-white text-xs font-sans px-3 py-1.5 rounded-lg flex items-center space-x-2">
-              <Maximize2 className="w-3.5 h-3.5 text-[#C59B51]" />
-              <span>Click to open full gallery ({activeImageIndex + 1}/{room.gallery.length})</span>
+            {/* Room category badge */}
+            <div className="absolute top-4 left-4">
+              <span className="px-3 py-1 bg-white/95 backdrop-blur-md text-[#171717] text-[10px] font-sans font-semibold uppercase tracking-wider rounded-lg shadow-sm border border-white/40">
+                {badges[room.id] || 'HERITAGE COLLECTION'}
+              </span>
             </div>
           </div>
 
-          {/* Right Thumbnails (4 cols) */}
-          <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-4">
-            {room.gallery.slice(0, 3).map((img, idx) => (
+          {/* RIGHT: 3 Images (1 Top Landscape + 2 Bottom Split) (5 cols out of 12) */}
+          <div className="lg:col-span-5 flex flex-col gap-3 sm:gap-3.5 h-[320px] sm:h-[420px] md:h-[480px] lg:h-[500px]">
+
+            {/* Top Wide Image */}
+            <div
+              onClick={() => {
+                setActiveImageIndex(1);
+                setLightboxOpen(true);
+              }}
+              className="relative flex-1 rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-xs border border-[#EAE4D9] bg-[#FAF8F5]"
+            >
+              <img
+                src={topLandscapePhoto}
+                alt={`${room.name} interior perspective`}
+                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+
+            {/* Bottom Row: 2 Split Images */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-3.5 flex-1">
+
+              {/* Bottom Left Image */}
               <div
-                key={idx}
-                onClick={() => setActiveImageIndex(idx)}
-                className={`relative aspect-[16/9] rounded-xl overflow-hidden cursor-pointer border-2 transition-all duration-300 shadow-xs ${
-                  activeImageIndex === idx
-                    ? 'border-[#C59B51] ring-2 ring-[#C59B51]/30'
-                    : 'border-transparent opacity-80 hover:opacity-100'
-                }`}
+                onClick={() => {
+                  setActiveImageIndex(2);
+                  setLightboxOpen(true);
+                }}
+                className="relative h-full rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-xs border border-[#EAE4D9] bg-[#FAF8F5]"
               >
                 <img
-                  src={img}
-                  alt={`${room.name} angle ${idx + 1}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  src={bottomLeftPhoto}
+                  alt={`${room.name} details & bathroom`}
+                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
                 />
+                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-            ))}
+
+              {/* Bottom Right Image with "See all X photos" pill button */}
+              <div
+                onClick={() => {
+                  setActiveImageIndex(3);
+                  setLightboxOpen(true);
+                }}
+                className="relative h-full rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-xs border border-[#EAE4D9] bg-[#FAF8F5]"
+              >
+                <img
+                  src={bottomRightPhoto}
+                  alt={`${room.name} hotel courtyard & balcony`}
+                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+                {/* Overlaid "See all X photos" Pill Button matching reference */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveImageIndex(0);
+                    setLightboxOpen(true);
+                  }}
+                  className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 inline-flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-black/70 hover:bg-black/90 backdrop-blur-md text-white text-[11px] sm:text-xs font-sans font-medium rounded-lg border border-white/25 shadow-lg transition-all active:scale-95"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>See all {allPhotos.length} photos</span>
+                </button>
+              </div>
+
+            </div>
+
           </div>
+
         </div>
 
-        {/* 4. Key Room Specifications Bar */}
-        <div className="bg-[#FAF8F5] border border-[#EAE4D9] rounded-2xl p-5 mb-12 shadow-xs">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center divide-x divide-[#EAE4D9] divide-y-0">
-            <div className="flex flex-col items-center p-2">
-              <Maximize className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">Room Size</span>
-              <span className="font-serif text-sm font-semibold text-[#171717]">{room.size}</span>
+        {/* 3. Main Split Content (Left 7-8 cols details | Right 4-5 cols sticky booking & host) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-16">
+
+          {/* LEFT COLUMN: Title, Narrative, Specs, Features & Policies (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
+
+            {/* Room Header with Share & Save Actions */}
+            <div className="pb-6 border-b border-[#EAE4D9]">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div>
+                  <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-[#171717] leading-tight">
+                    {room.name}
+                  </h1>
+                  <div className="flex items-center text-xs text-[#666666] font-sans mt-2">
+                    <MapPin className="w-3.5 h-3.5 text-[#C59B51] mr-1.5 shrink-0" />
+                    <span>Purohit Ka Khurra, Near Chandpole &amp; Lake Pichola, Udaipur, Rajasthan</span>
+                  </div>
+                </div>
+
+                {/* Share & Save Buttons */}
+                <div className="flex items-center space-x-2.5 shrink-0">
+                  <button
+                    onClick={handleShare}
+                    className="relative inline-flex items-center space-x-1.5 px-3.5 py-1.5 border border-[#EAE4D9] hover:border-[#C59B51] rounded-lg text-xs font-sans text-[#404040] hover:text-[#C59B51] bg-white transition-colors"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>Share</span>
+                    {copiedLink && (
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#171717] text-white text-[10px] px-2 py-0.5 rounded shadow-md whitespace-nowrap">
+                        Link Copied!
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIsSaved(!isSaved)}
+                    className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 border rounded-lg text-xs font-sans transition-colors ${
+                      isSaved
+                        ? 'border-[#C59B51] text-[#C59B51] bg-[#FAF8F5]'
+                        : 'border-[#EAE4D9] text-[#404040] hover:border-[#C59B51] hover:text-[#C59B51] bg-white'
+                    }`}
+                  >
+                    <Heart
+                      className={`w-3.5 h-3.5 ${
+                        isSaved ? 'fill-[#C59B51] text-[#C59B51]' : ''
+                      }`}
+                    />
+                    <span>{isSaved ? 'Saved' : 'Save'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <p className="font-serif italic text-sm sm:text-base text-[#737373] mt-3">
+                &ldquo;{room.tagline}&rdquo;
+              </p>
             </div>
 
-            <div className="flex flex-col items-center p-2">
-              <Bed className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">Bed Type</span>
-              <span className="font-serif text-sm font-semibold text-[#171717] truncate max-w-[120px]">
-                {room.bedType.split('+')[0]}
-              </span>
+            {/* Description / Narrative Paragraphs */}
+            <div className="space-y-3.5 text-xs sm:text-sm font-body text-[#525252] leading-relaxed">
+              <p>{room.description}</p>
+              <p>{room.fullDetails}</p>
+              <p>
+                Nestled along the tranquil waterfront street of Purohit Ka Khurra near Chandpole, Hotel Mewari Villa places you within walking distance to Gangaur Ghat, Bagore Ki Haveli, and City Palace while sheltering you in peaceful, heritage-inspired tranquility.
+              </p>
             </div>
 
-            <div className="flex flex-col items-center p-2">
-              <Users className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">Occupancy</span>
-              <span className="font-serif text-sm font-semibold text-[#171717]">{room.occupancy}</span>
+            {/* Room Specifications Grid (Exact layout from reference: Property Type, Year Built, Size, Bedrooms, Bathrooms, Price) */}
+            <div className="bg-[#FAF8F5] border border-[#EAE4D9] rounded-2xl p-5 sm:p-6 shadow-2xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-5 gap-x-4">
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Room Category
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#171717] block">
+                    {room.name.includes('Suite') ? 'Royal Heritage Suite' : 'Deluxe Heritage Room'}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Heritage Style
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#171717] block">
+                    Mewar Royal Architecture
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Room Size
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#171717] block">
+                    {room.size}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Bedding
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#171717] block">
+                    {room.bedType}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Bathrooms
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#171717] block">
+                    1 Luxury Marble Bath
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-[#737373] font-sans block mb-1">
+                    Starting Tariff
+                  </span>
+                  <span className="font-serif text-sm sm:text-base font-semibold text-[#C59B51] block">
+                    {room.startingPrice} <span className="text-xs text-[#737373] font-normal">/ night</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col items-center p-2">
-              <Eye className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">View</span>
-              <span className="font-serif text-sm font-semibold text-[#171717] truncate max-w-[120px]">
-                {room.view}
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center p-2">
-              <Clock className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">Check-in</span>
-              <span className="font-serif text-sm font-semibold text-[#171717]">{HOTEL_INFO.checkIn}</span>
-            </div>
-
-            <div className="flex flex-col items-center p-2">
-              <ShieldCheck className="w-4 h-4 text-[#C59B51] mb-1.5" />
-              <span className="text-[10px] uppercase tracking-wider text-[#737373] font-sans">Hygiene</span>
-              <span className="font-serif text-sm font-semibold text-[#171717]">100% Sanitized</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 5. Main Split Section: Narrative & Amenities (8 cols) + Sticky Reservation Form (4 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-16">
-
-          {/* Left Details (8 cols) */}
-          <div className="lg:col-span-8 space-y-10">
-
-            {/* Narrative */}
+            {/* Property Features / Amenities (2-column icon list like reference) */}
             <div>
-              <div className="flex items-center space-x-2 mb-2.5">
-                <span className="w-4 h-px bg-[#C59B51]" />
-                <span className="text-[10px] font-sans uppercase tracking-widest text-[#C59B51] font-semibold">
-                  Suite Narrative
-                </span>
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#171717] mb-4">
-                About The {room.name}
+              <h2 className="font-serif text-xl sm:text-2xl font-normal text-[#171717] mb-4">
+                Property Features &amp; Amenities
               </h2>
-              <div className="space-y-4 font-body text-sm text-[#525252] leading-relaxed">
-                <p>{room.fullDetails}</p>
-                <p>
-                  Imbued with authentic Rajasthani heritage motifs, handcrafted woodwork, and traditional brass appointments, this accommodation reflects the regal traditions of Mewar. Nestled peacefully in Purohit Ka Khurra near Chandpole, guests enjoy total relaxation just moments from Udaipur’s iconic ghats and palaces.
-                </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Compass className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    {room.view}
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Utensils className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    Jalsa Rooftop Pure Veg Restaurant
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Wifi className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    Complimentary High-Speed Wi-Fi
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Wind className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    Climate Control Air Conditioning
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Sparkles className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    En-suite Bathroom with Hot Water Rain Shower
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Clock className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    24/7 Room Service &amp; Concierge Desk
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Tv className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    Flat-Screen LED Entertainment TV
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <Coffee className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    In-Room Electric Kettle &amp; Tea Amenities
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <ShieldCheck className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    In-Room Electronic Safe &amp; Wardrobe
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#EAE4D9]">
+                  <CheckCircle2 className="w-4 h-4 text-[#C59B51] shrink-0" />
+                  <span className="text-xs font-sans text-[#333333] font-medium">
+                    Daily Royal Housekeeping &amp; Luggage Care
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Highlights Grid */}
-            <div>
-              <h3 className="font-serif text-xl font-normal text-[#171717] mb-4">
-                Signature Highlights
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {room.highlights.map((highlight) => (
-                  <div
-                    key={highlight}
-                    className="p-3.5 bg-[#FAF8F5] rounded-xl border border-[#EAE4D9] flex items-center space-x-3"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-white border border-[#C59B51] flex items-center justify-center text-[#C59B51] shrink-0">
-                      <Check className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="text-xs font-sans font-medium text-[#171717]">{highlight}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Comprehensive Amenities Grid */}
-            <div>
-              <h3 className="font-serif text-xl font-normal text-[#171717] mb-4">
-                Included Suite Amenities
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {room.amenities.map((amenity) => (
-                  <div
-                    key={amenity}
-                    className="p-3 bg-white rounded-xl border border-[#EAE4D9] flex items-center space-x-2.5 shadow-2xs"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-[#C59B51]" />
-                    <span className="text-xs font-sans text-[#404040]">{amenity}</span>
-                  </div>
-                ))}
-                <div className="p-3 bg-white rounded-xl border border-[#EAE4D9] flex items-center space-x-2.5 shadow-2xs">
-                  <div className="w-2 h-2 rounded-full bg-[#C59B51]" />
-                  <span className="text-xs font-sans text-[#404040]">Hot Water Geyser</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#EAE4D9] flex items-center space-x-2.5 shadow-2xs">
-                  <div className="w-2 h-2 rounded-full bg-[#C59B51]" />
-                  <span className="text-xs font-sans text-[#404040]">Rooftop Dining Access</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#EAE4D9] flex items-center space-x-2.5 shadow-2xs">
-                  <div className="w-2 h-2 rounded-full bg-[#C59B51]" />
-                  <span className="text-xs font-sans text-[#404040]">Luggage Assistance</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Stay Policies */}
-            <div className="p-6 bg-[#FAF8F5] rounded-2xl border border-[#EAE4D9]">
-              <h3 className="font-serif text-lg font-medium text-[#171717] mb-3">
-                Hotel Policies &amp; Guest Guidelines
+            {/* Hotel Policies & Guest Guidelines */}
+            <div className="p-5 bg-[#FAF8F5] rounded-2xl border border-[#EAE4D9]">
+              <h3 className="font-serif text-base font-medium text-[#171717] mb-2.5">
+                Hotel Policies &amp; Guidelines
               </h3>
               <ul className="space-y-2 text-xs font-sans text-[#666666]">
                 <li className="flex items-center space-x-2">
                   <span className="text-[#C59B51]">•</span>
-                  <span><strong>Check-in:</strong> {HOTEL_INFO.checkIn} | <strong>Check-out:</strong> {HOTEL_INFO.checkOut}</span>
+                  <span><strong>Check-in:</strong> {HOTEL_INFO.checkIn} &nbsp;|&nbsp; <strong>Check-out:</strong> {HOTEL_INFO.checkOut}</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <span className="text-[#C59B51]">•</span>
-                  <span><strong>Pure Vegetarian Dining:</strong> Jalsa Restaurant on the rooftop serves 100% pure vegetarian cuisine.</span>
+                  <span><strong>100% Pure Vegetarian:</strong> Jalsa Restaurant on our rooftop serves strictly pure vegetarian food.</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <span className="text-[#C59B51]">•</span>
-                  <span><strong>Parking:</strong> {HOTEL_INFO.parkingNote}. Our team assists gladly with luggage transfer upon arrival.</span>
+                  <span><strong>Parking:</strong> {HOTEL_INFO.parkingNote}. Our team gladly assists with luggage transfer upon your arrival.</span>
                 </li>
               </ul>
             </div>
 
           </div>
 
-          {/* Right Sticky Booking & Inquiry Card (4 cols) */}
-          <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-5">
-            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE4D9] shadow-xl">
-              <div className="flex items-baseline justify-between pb-4 border-b border-[#EAE4D9] mb-5">
-                <div>
-                  <span className="text-[10px] uppercase tracking-wider text-[#737373] block font-sans">Starting Tariff</span>
-                  <span className="font-serif text-3xl font-bold text-[#171717]">{room.startingPrice}</span>
-                  <span className="text-xs text-[#737373] font-sans ml-1">/ night</span>
-                </div>
-                <span className="px-2.5 py-1 bg-[#FAF8F5] text-[#C59B51] text-[10px] font-sans font-bold uppercase tracking-wider rounded-md border border-[#EAE4D9]">
-                  Best Rate
-                </span>
-              </div>
+          {/* RIGHT COLUMN: Concierge Host Card + Booking Form + Testimonial (4 cols, Sticky) */}
+          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
 
-              {/* Booking Controls */}
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#404040] font-sans font-semibold mb-1.5">
-                    Check-in Date
-                  </label>
-                  <input
-                    type="date"
-                    value={checkInDate}
-                    onChange={(e) => setCheckInDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#EAE4D9] text-xs font-sans rounded-lg focus:outline-hidden focus:border-[#C59B51]"
-                  />
+            {/* 1. Agent / Host Card (Exact reference style) */}
+            <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#EAE4D9] shadow-sm flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                {/* Circular Avatar */}
+                <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#C59B51] flex items-center justify-center text-[#C59B51] font-serif font-bold text-sm shrink-0">
+                  MV
                 </div>
-
                 <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#404040] font-sans font-semibold mb-1.5">
-                    Check-out Date
-                  </label>
-                  <input
-                    type="date"
-                    value={checkOutDate}
-                    onChange={(e) => setCheckOutDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#EAE4D9] text-xs font-sans rounded-lg focus:outline-hidden focus:border-[#C59B51]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] uppercase tracking-wider text-[#404040] font-sans font-semibold mb-1.5">
-                    Guests / Occupancy
-                  </label>
-                  <select
-                    value={guestCount}
-                    onChange={(e) => setGuestCount(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#EAE4D9] text-xs font-sans rounded-lg focus:outline-hidden focus:border-[#C59B51]"
-                  >
-                    <option value="1 Guest">1 Guest</option>
-                    <option value="2 Guests">2 Guests (Standard)</option>
-                    <option value="3 Guests">3 Guests</option>
-                    <option value="4 Guests">4 Guests</option>
-                    <option value="5 Guests">5 Guests (With Extra Bed)</option>
-                  </select>
+                  <h3 className="font-serif text-sm font-semibold text-[#171717]">
+                    Mewari Villa Concierge
+                  </h3>
+                  <p className="text-[11px] font-sans text-[#737373]">
+                    Heritage Hospitality Team
+                  </p>
+                  <div className="flex items-center space-x-1 mt-0.5">
+                    <span className="text-xs font-sans font-semibold text-[#171717]">4.9</span>
+                    <div className="flex text-amber-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Primary Actions */}
-              <div className="space-y-3">
-                <button
-                  onClick={() => onOpenEnquiry(room.name)}
-                  className="w-full py-3.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-lg shadow-md transition-all active:scale-98 text-center flex items-center justify-center space-x-2"
-                >
-                  <span>Reserve {room.name}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
-                <a
-                  href={generateWhatsAppBookingUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 bg-[#FAF8F5] hover:bg-[#25D366] text-[#171717] hover:text-white border border-[#EAE4D9] hover:border-[#25D366] text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2"
-                >
-                  <MessageSquare className="w-4 h-4 text-[#25D366] group-hover:text-white" />
-                  <span>WhatsApp Concierge</span>
-                </a>
-
-                <a
-                  href={`tel:${HOTEL_INFO.primaryPhone}`}
-                  className="w-full py-2.5 bg-white text-[#737373] hover:text-[#171717] text-xs font-sans flex items-center justify-center space-x-1.5 text-center"
-                >
-                  <Phone className="w-3.5 h-3.5 text-[#C59B51]" />
-                  <span>Call {HOTEL_INFO.primaryPhone}</span>
-                </a>
-              </div>
-
-              <div className="mt-5 pt-4 border-t border-[#F0ECE1] text-[11px] font-sans text-[#737373] space-y-1">
-                <p>✓ Instant inquiry confirmation with hotel desk</p>
-                <p>✓ Best direct tariff guaranteed</p>
-                <p>✓ Free cancellation options available</p>
-              </div>
+              {/* Dark Pill Call Agent Button */}
+              <a
+                href={`tel:${HOTEL_INFO.primaryPhone}`}
+                className="px-3.5 py-2 bg-[#171717] hover:bg-[#2A2A2A] text-white text-xs font-sans font-medium rounded-lg inline-flex items-center space-x-1.5 transition-colors shadow-xs shrink-0"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#C59B51]" />
+                <span>Call Hotel</span>
+              </a>
             </div>
+
+            {/* 2. Reservation / Contact Form Card (Exact reference style) */}
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#EAE4D9] shadow-md">
+              <h3 className="font-serif text-base font-normal text-[#171717] mb-1">
+                Reserve or Inquire
+              </h3>
+              <p className="text-xs text-[#737373] font-sans mb-4">
+                Leave your details and our team will get back to you shortly.
+              </p>
+
+              {formSubmitted ? (
+                <div className="p-4 bg-[#FAF8F5] border border-[#C59B51]/40 rounded-xl text-center space-y-2">
+                  <CheckCircle2 className="w-8 h-8 text-[#C59B51] mx-auto" />
+                  <p className="text-xs font-sans font-medium text-[#171717]">
+                    Inquiry opened on WhatsApp!
+                  </p>
+                  <p className="text-[11px] text-[#737373]">
+                    Our front desk concierge will confirm availability instantly.
+                  </p>
+                  <button
+                    onClick={() => setFormSubmitted(false)}
+                    className="text-[11px] text-[#C59B51] underline font-medium pt-1"
+                  >
+                    Send another inquiry
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleFormSubmit} className="space-y-3">
+                  {/* Name Input */}
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Your name"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-hidden focus:border-[#C59B51] transition-colors"
+                    />
+                  </div>
+
+                  {/* Phone with Country Code (+91) */}
+                  <div className="flex rounded-lg border border-[#E0D9CC] overflow-hidden focus-within:border-[#C59B51] transition-colors bg-white">
+                    <div className="px-3 py-2.5 bg-[#FAF8F5] border-r border-[#E0D9CC] text-xs font-sans text-[#404040] flex items-center space-x-1 shrink-0 select-none">
+                      <span>🇮🇳</span>
+                      <span>+91</span>
+                      <span className="text-[10px] text-[#737373]">∨</span>
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="Phone number"
+                      value={guestPhone}
+                      onChange={(e) => setGuestPhone(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 bg-white text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-hidden"
+                    />
+                  </div>
+
+                  {/* Email Input */}
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-hidden focus:border-[#C59B51] transition-colors"
+                    />
+                  </div>
+
+                  {/* Separate Dates: Check-in & Check-out */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-wider text-[#737373] font-sans font-semibold mb-1">
+                        Check-in Date
+                      </label>
+                      <input
+                        type="date"
+                        value={checkInDate}
+                        onChange={(e) => setCheckInDate(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] focus:outline-hidden focus:border-[#C59B51] transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-wider text-[#737373] font-sans font-semibold mb-1">
+                        Check-out Date
+                      </label>
+                      <input
+                        type="date"
+                        value={checkOutDate}
+                        onChange={(e) => setCheckOutDate(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] focus:outline-hidden focus:border-[#C59B51] transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Separate Guests / Occupancy Field */}
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#737373] font-sans font-semibold mb-1">
+                      Guests / Occupancy
+                    </label>
+                    <div className="relative flex items-center">
+                      <Users className="w-3.5 h-3.5 text-[#C59B51] absolute left-3 pointer-events-none" />
+                      <select
+                        value={guestCount}
+                        onChange={(e) => setGuestCount(e.target.value)}
+                        className="w-full pl-9 pr-7 py-2.5 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] focus:outline-hidden focus:border-[#C59B51] transition-colors appearance-none cursor-pointer"
+                      >
+                        <option value="1 Guest">1 Guest (Solo)</option>
+                        <option value="2 Guests">2 Guests (Standard)</option>
+                        <option value="3 Guests">3 Guests (Triple)</option>
+                        <option value="4 Guests">4 Guests (Family)</option>
+                        <option value="5+ Guests">5+ Guests (Multiple Rooms)</option>
+                      </select>
+                      <span className="absolute right-3 pointer-events-none text-[#737373] text-[10px]">▼</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <textarea
+                      placeholder="Your message or special requests"
+                      rows={2}
+                      value={guestMessage}
+                      onChange={(e) => setGuestMessage(e.target.value)}
+                      className="w-full px-3.5 py-2 bg-white border border-[#E0D9CC] rounded-lg text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-hidden focus:border-[#C59B51] transition-colors resize-none"
+                    />
+                  </div>
+
+                  {/* Terms Checkbox */}
+                  <label className="flex items-start space-x-2 text-[11px] font-sans text-[#666666] cursor-pointer select-none pt-1">
+                    <input
+                      type="checkbox"
+                      checked={agreeTerms}
+                      onChange={(e) => setAgreeTerms(e.target.checked)}
+                      className="mt-0.5 rounded border-[#C59B51] text-[#C59B51] focus:ring-0"
+                    />
+                    <span>
+                      I agree to be contacted by Mewari Villa concierge via WhatsApp, phone, or email.
+                    </span>
+                  </label>
+
+                  {/* Submit Button (Get in touch -> style from reference) */}
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg shadow-sm transition-all text-center flex items-center justify-center space-x-1.5 active:scale-98 mt-2"
+                  >
+                    <span>Get in touch</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* WhatsApp Quick Chat */}
+                  <a
+                    href={generateDirectWhatsAppUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 bg-[#FAF8F5] hover:bg-[#25D366] text-[#171717] hover:text-white border border-[#EAE4D9] hover:border-[#25D366] text-xs font-sans font-medium rounded-lg transition-colors flex items-center justify-center space-x-2 text-center"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-[#25D366] group-hover:text-white" />
+                    <span>Instant WhatsApp Chat</span>
+                  </a>
+                </form>
+              )}
+            </div>
+
+            {/* 3. Review Snippet Card (Matching reference Lekki villa review pill) */}
+            <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-[#EAE4D9] shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <div className="w-7 h-7 rounded-full bg-[#EAE4D9] flex items-center justify-center text-[#171717] font-serif font-bold text-[10px]">
+                    SK
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-xs font-semibold text-[#171717]">
+                      Suman Khadka
+                    </h4>
+                    <p className="text-[10px] text-[#737373] font-sans">Verified Guest · 4 mos ago</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-1 text-amber-500 text-xs font-semibold font-sans">
+                  <span>★</span>
+                  <span>5.0</span>
+                </div>
+              </div>
+              <p className="text-[11px] font-body text-[#525252] leading-relaxed italic">
+                &ldquo;Spacious, clean rooms and friendly staff. The City Palace, Ambrai Ghat, and Bagore ki Haveli are at walking distance.&rdquo;
+              </p>
+            </div>
+
           </div>
 
         </div>
 
-        {/* 6. Explore Other Suites Section */}
+        {/* 4. Cross-Navigation: Other Suites at Mewari Villa */}
         <div className="pt-12 border-t border-[#EAE4D9]">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="flex items-center space-x-2 mb-1.5">
-                <span className="w-4 h-px bg-[#C59B51]" />
-                <span className="text-[10px] font-sans uppercase tracking-widest text-[#C59B51] font-semibold">
-                  Compare Accommodations
-                </span>
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#171717]">
-                Other Suites at Mewari Villa
-              </h2>
+              <span className="text-[10px] font-sans uppercase tracking-widest text-[#C59B51] font-semibold block mb-1">
+                Heritage Collection
+              </span>
+              <h3 className="font-serif text-2xl font-normal text-[#171717]">
+                Other Suites &amp; Rooms at Mewari Villa
+              </h3>
             </div>
 
             <button
               onClick={onBack}
-              className="text-xs font-sans uppercase tracking-wider text-[#666666] hover:text-[#C59B51] font-semibold transition-colors"
+              className="text-xs font-sans text-[#C59B51] hover:underline font-medium"
             >
-              View All Suites →
+              View Full Overview →
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {otherRooms.map((otherRoom) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {otherRooms.map((r) => (
               <div
-                key={otherRoom.id}
-                onClick={() => onSelectRoom(otherRoom.id)}
-                className="group cursor-pointer bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden shadow-xs hover:shadow-xl hover:border-[#D5CABE] transition-all duration-300 flex flex-col justify-between"
+                key={r.id}
+                onClick={() => onSelectRoom(r.id)}
+                className="group cursor-pointer bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden shadow-2xs hover:shadow-lg hover:border-[#D5CABE] transition-all duration-300 flex flex-col"
               >
-                <div>
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#FAF8F5]">
-                    <img
-                      src={otherRoom.image}
-                      alt={otherRoom.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 left-3 bg-[#C59B51] text-white text-[9px] uppercase tracking-widest font-sans font-bold px-2 py-0.5 rounded-md">
-                      {badges[otherRoom.id] || 'HERITAGE'}
-                    </div>
-                  </div>
-
-                  <div className="p-5">
-                    <h3 className="font-serif text-lg font-medium text-[#171717] group-hover:text-[#C59B51] transition-colors leading-snug mb-1">
-                      {otherRoom.name}
-                    </h3>
-                    <p className="text-xs font-sans text-[#737373] mb-3">{otherRoom.view}</p>
-
-                    <div className="flex items-baseline justify-between pt-3 border-t border-[#F0ECE1]">
-                      <span className="text-xs text-[#737373] font-sans">Starting from</span>
-                      <span className="font-serif text-lg font-bold text-[#171717]">
-                        {otherRoom.startingPrice} <span className="text-xs font-sans font-normal text-[#737373]">/ night</span>
-                      </span>
-                    </div>
+                <div className="relative aspect-[16/10] overflow-hidden bg-[#FAF8F5]">
+                  <img
+                    src={r.image}
+                    alt={r.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-[#171717] text-[10px] font-sans font-semibold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-2xs">
+                    {r.startingPrice} <span className="font-normal text-[9px]">/ night</span>
                   </div>
                 </div>
 
-                <div className="p-5 pt-0">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectRoom(otherRoom.id);
-                    }}
-                    className="w-full py-2.5 bg-[#FAF8F5] group-hover:bg-[#C59B51] group-hover:text-white text-[#171717] text-xs uppercase tracking-wider font-sans font-semibold rounded-lg border border-[#EAE4D9] group-hover:border-[#C59B51] transition-all text-center"
-                  >
-                    View Suite Details →
-                  </button>
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-serif text-base font-medium text-[#171717] group-hover:text-[#C59B51] transition-colors mb-1">
+                      {r.name}
+                    </h4>
+                    <p className="text-xs text-[#737373] font-sans line-clamp-1 mb-2">
+                      {r.tagline}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#F0ECE1] flex items-center justify-between text-xs text-[#C59B51] font-medium font-sans">
+                    <span>Explore Suite Page</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </div>
             ))}
@@ -519,47 +799,77 @@ Please let me know room availability and reservation details.`;
 
       </div>
 
-      {/* Full-Screen Lightbox Modal */}
+      {/* 5. Fullscreen Lightbox Modal with Carousel Navigation */}
       {lightboxOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none animate-fadeIn"
         >
-          <button
-            onClick={() => setLightboxOpen(false)}
-            className="absolute top-5 right-5 text-white/70 hover:text-white p-2 rounded-full bg-white/10"
-            aria-label="Close"
-          >
-            <X className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={handlePrevPhoto}
-            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full bg-white/10"
-            aria-label="Previous photo"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={handleNextPhoto}
-            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full bg-white/10"
-            aria-label="Next photo"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          <div className="max-w-4xl max-h-[85vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={room.gallery[activeImageIndex] || room.image}
-              alt={room.name}
-              className="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl"
-            />
-            <div className="mt-4 text-center text-white">
-              <span className="text-xs uppercase tracking-wider text-[#C59B51] font-sans">
-                {room.name} · Photo {activeImageIndex + 1} of {room.gallery.length}
-              </span>
+          {/* Top Bar: Title & Close Button */}
+          <div className="flex items-center justify-between text-white max-w-7xl mx-auto w-full pt-2">
+            <div>
+              <h3 className="font-serif text-base sm:text-lg font-medium text-white/90">
+                {room.name}
+              </h3>
+              <p className="text-xs font-sans text-[#C59B51]">
+                Photo {activeImageIndex + 1} of {allPhotos.length}
+              </p>
             </div>
+
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close photo gallery"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Main Photo Viewport with Prev / Next Navigation */}
+          <div className="relative flex-1 flex items-center justify-center max-w-6xl mx-auto w-full my-4">
+            <button
+              onClick={handlePrevPhoto}
+              className="absolute left-2 sm:left-4 z-10 w-11 h-11 rounded-full bg-black/60 hover:bg-[#C59B51] text-white flex items-center justify-center transition-colors border border-white/20 shadow-lg"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <img
+              src={allPhotos[activeImageIndex]}
+              alt={`${room.name} photo ${activeImageIndex + 1}`}
+              className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl transition-all duration-300"
+            />
+
+            <button
+              onClick={handleNextPhoto}
+              className="absolute right-2 sm:right-4 z-10 w-11 h-11 rounded-full bg-black/60 hover:bg-[#C59B51] text-white flex items-center justify-center transition-colors border border-white/20 shadow-lg"
+              aria-label="Next photo"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Bottom Thumbnails Strip */}
+          <div className="max-w-4xl mx-auto w-full pb-2 overflow-x-auto flex items-center justify-center space-x-2.5">
+            {allPhotos.map((photo, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveImageIndex(idx)}
+                className={`relative w-16 sm:w-20 aspect-[16/10] rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
+                  activeImageIndex === idx
+                    ? 'border-[#C59B51] scale-105'
+                    : 'border-transparent opacity-50 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={photo}
+                  alt={`Thumbnail ${idx + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
           </div>
         </div>
       )}
