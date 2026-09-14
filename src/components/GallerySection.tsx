@@ -73,17 +73,14 @@ export const GallerySection: React.FC = () => {
           </div>
         </div>
 
-        {/* Editorial Grid */}
+        {/* Uniform Luxury Editorial Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredImages.map((item, index) => {
-            const isFeatured = index % 5 === 0;
+          {filteredImages.map((item) => {
             return (
               <div
                 key={item.id}
                 onClick={() => setLightboxImage(item)}
-                className={`group relative overflow-hidden bg-white rounded-2xl cursor-pointer border border-[#EAE4D9] shadow-xs hover:shadow-xl hover:border-[#D5CABE] transition-all duration-300 ${
-                  isFeatured ? 'sm:col-span-2 lg:col-span-2 aspect-[16/10]' : 'aspect-[4/3]'
-                }`}
+                className="group relative overflow-hidden bg-[#FAF8F5] rounded-2xl cursor-pointer border border-[#EAE4D9] shadow-xs hover:shadow-xl hover:border-[#C59B51] transition-all duration-300 aspect-[4/3]"
               >
                 <img
                   src={item.image}
@@ -91,22 +88,22 @@ export const GallerySection: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-85 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
 
                 {/* Hover Maximize Icon */}
-                <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md transform translate-y-1 group-hover:translate-y-0">
                   <Maximize2 className="w-4 h-4 text-[#C59B51]" />
                 </div>
 
                 {/* Caption on Card */}
-                <div className="absolute bottom-4 left-4 right-4 text-white transform translate-y-1 group-hover:translate-y-0 transition-transform">
-                  <span className="text-[10px] tracking-wider uppercase text-[#C59B51] font-sans font-semibold block mb-1">
+                <div className="absolute bottom-4 left-4 right-4 text-white transform translate-y-0.5 group-hover:translate-y-0 transition-transform">
+                  <span className="inline-block px-2.5 py-0.5 bg-black/40 backdrop-blur-xs border border-[#C59B51]/40 text-[#C59B51] text-[10px] tracking-wider uppercase font-sans font-semibold rounded-md mb-1.5">
                     {item.category}
                   </span>
-                  <h4 className="font-serif text-lg sm:text-xl font-medium leading-snug">
+                  <h4 className="font-serif text-lg sm:text-xl font-medium text-white leading-snug drop-shadow-sm">
                     {item.title}
                   </h4>
-                  <p className="text-xs text-white/80 font-body line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-xs text-white/80 font-body line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity duration-300 mt-0.5">
                     {item.caption}
                   </p>
                 </div>
@@ -157,13 +154,13 @@ export const GallerySection: React.FC = () => {
               className="max-h-[70vh] w-auto object-contain rounded-xl shadow-2xl"
             />
             <div className="mt-4 text-center text-white">
-              <span className="text-xs uppercase tracking-wider text-[#C59B51] font-sans">
+              <span className="text-xs uppercase tracking-wider text-[#C59B51] font-sans font-semibold">
                 {lightboxImage.category}
               </span>
-              <h3 className="font-serif text-xl sm:text-2xl mt-1">
+              <h3 className="font-serif text-xl sm:text-2xl mt-1 text-white">
                 {lightboxImage.title}
               </h3>
-              <p className="text-xs text-white/70 font-body max-w-lg mt-1">
+              <p className="text-xs text-white/80 font-body max-w-lg mt-1">
                 {lightboxImage.caption}
               </p>
             </div>
