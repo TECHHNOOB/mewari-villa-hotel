@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ChevronLeft, ChevronRight, MapPin, Home, IndianRupee, Users, Search } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { REAL_HOTEL_IMAGES } from '../data/hotelData';
 
 interface HeroProps {
@@ -10,53 +10,48 @@ interface HeroProps {
 
 const HERO_SLIDES = [
   {
-    id: 'suite',
+    id: 'rooftop-sunset',
+    url: REAL_HOTEL_IMAGES.jalsaLakeSunset,
+    tag: 'Lake Pichola Rooftop',
+    alt: 'Sunset over Lake Pichola from Mewari Villa Rooftop Udaipur',
+  },
+  {
+    id: 'suite-lake',
     url: REAL_HOTEL_IMAGES.villaSuiteMain,
     tag: 'Villa Suite Lake View',
-    title: 'Waterfront Arched Balconies',
-    subtitle: 'Direct panoramic vistas of Lake Pichola & historic City Palace',
-    badge: 'Flagship Suite',
     alt: 'Mewari Villa Suite overlooking Lake Pichola Udaipur',
   },
   {
-    id: 'rooftop',
+    id: 'panoramic-lake',
     url: REAL_HOTEL_IMAGES.lakeViewRooftop,
-    tag: 'Rooftop Vantage',
-    title: 'Unobstructed Lake Pichola Views',
-    subtitle: 'Gentle lake breezes and 360° Aravalli hill silhouettes',
-    badge: 'Sunset Terrace',
-    alt: 'Lake Pichola Panoramic Views from Mewari Villa Rooftop',
+    tag: 'Panoramic Lakefront',
+    alt: 'Direct Lake Pichola panoramic views from hotel terrace',
   },
   {
-    id: 'exterior',
+    id: 'heritage-courtyard',
     url: REAL_HOTEL_IMAGES.heroExterior,
-    tag: 'Heritage Sanctuary',
-    title: 'Royal Mewari Architecture',
-    subtitle: 'Hand-carved sandstone arches & authentic Rajasthani courtyards',
-    badge: 'Purohit Ka Khurra',
-    alt: 'Mewari Villa Hotel exterior entrance Udaipur',
+    tag: 'Royal Heritage Architecture',
+    alt: 'Mewari Villa Hotel heritage facade Udaipur',
   },
-  {
-    id: 'dining',
-    url: REAL_HOTEL_IMAGES.jalsaLakeSunset,
-    tag: 'Jalsa Rooftop',
-    title: 'Twilight Dinners Over The Lake',
-    subtitle: '100% pure vegetarian culinary excellence under starlit skies',
-    badge: 'Pure Veg Dining',
-    alt: 'Sunset over Lake Pichola from Jalsa Rooftop Restaurant',
-  },
+];
+
+// Curated verified guest avatars for social proof badge
+const GUEST_AVATARS = [
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
 ];
 
 export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry, onExploreVilla }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Auto-advance every 6.5 seconds unless user is hovering
+  // Auto-advance hero slides every 7 seconds
   useEffect(() => {
     if (isHovered) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 6500);
+    }, 7000);
     return () => clearInterval(timer);
   }, [isHovered]);
 
@@ -71,307 +66,171 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry, onExploreVilla }) => 
   const activeSlide = HERO_SLIDES[currentSlide];
 
   return (
-    <section id="hero-section" className="relative pt-24 pb-16 md:pt-28 md:pb-24 bg-gradient-to-b from-[#FAF8F5] via-[#FAF8F5] to-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
-
-        {/* 2-Column Split Hero Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-
-          {/* Left Column: Typography, CTAs & Interactive Slide Selectors */}
-          <div className="lg:col-span-6 flex flex-col justify-center">
-
-            {/* Brand Eyebrow with Crest */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center space-x-3 mb-4"
-            >
-              {/* <img
-                src="/mewari-villa-emblem.png"
-                alt="Hotel Mewari Villa Emblem"
-                className="h-8 w-auto object-contain"
-              /> */}
-              {/* <span className="h-px w-6 bg-[#C59B51]" /> */}
-              <span className="font-serif text-xs tracking-[0.22em] text-[#C59B51] uppercase font-semibold">
-                A Royal Heritage Sanctuary · Udaipur
-              </span>
-            </motion.div>
-
-            {/* Main Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="mb-5"
-            >
-              <h2 className="font-serif text-3xl sm:text-4xl text-[#383838] font-light leading-tight">
-                Discover Extraordinary
-              </h2>
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-[#171717] leading-[1.08] mt-1">
-                Luxury Living
-              </h1>
-            </motion.div>
-
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-body text-sm sm:text-base text-[#666666] leading-relaxed max-w-lg mb-7"
-            >
-              Explore curated collections of the city's most exclusive lakeside suites, authentic royal architecture, and tranquil rooftop dining overlooking Lake Pichola.
-            </motion.p>
-
-            {/* Primary & Secondary Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-wrap items-center gap-3.5 mb-8"
-            >
-              <button
-                id="hero-primary-enquiry-cta"
-                onClick={onOpenEnquiry}
-                className="inline-flex items-center space-x-3 px-6 py-3.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
-              >
-                <span>Book Your Stay</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
-
-              <button
-                id="hero-secondary-explore-cta"
-                onClick={onExploreVilla}
-                className="px-6 py-3.5 border border-[#D5CABE] text-[#171717] hover:bg-[#FAF8F5] text-xs uppercase tracking-[0.16em] font-sans font-medium rounded-lg transition-all duration-300"
-              >
-                Explore Suites
-              </button>
-            </motion.div>
-
-            {/* 4 Interactive Thumbnail Selectors (Starting website slider revived & elevated) */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="pt-5 border-t border-[#EAE4D9]"
-            >
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[10px] uppercase tracking-[0.2em] font-sans text-[#8C8C8C] font-semibold">
-                  Featured Highlights (0{currentSlide + 1} / 0{HERO_SLIDES.length})
-                </span>
-                <span className="text-xs font-serif text-[#C59B51]">
-                  {activeSlide.tag}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-4 gap-2.5">
-                {HERO_SLIDES.map((slide, idx) => {
-                  const isActive = currentSlide === idx;
-                  return (
-                    <button
-                      key={slide.id}
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`relative rounded-xl overflow-hidden aspect-[16/10] border-2 transition-all duration-300 text-left group ${isActive
-                        ? 'border-[#C59B51] shadow-md ring-2 ring-[#C59B51]/30 scale-[1.02]'
-                        : 'border-transparent opacity-65 hover:opacity-100 hover:border-[#D5CABE]'
-                        }`}
-                    >
-                      <img
-                        src={slide.url}
-                        alt={slide.alt}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                      <div className="absolute bottom-1 left-1.5 right-1.5 text-white">
-                        <span className="text-[9px] font-sans font-medium truncate block leading-tight">
-                          {slide.badge}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </motion.div>
-
-          </div>
-
-          {/* Right Column: Hero Visual Showcase Slider */}
-          <div
-            className="lg:col-span-6 relative"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+    <section
+      id="hero-section"
+      className="relative min-h-[92vh] sm:min-h-screen flex flex-col justify-between overflow-hidden bg-[#141210]"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Background Slideshow with Cinematic Fade */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSlide.id}
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
+            className="absolute inset-0"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.2 }}
-              className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#EAE4D9]/90 aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] bg-[#FAF8F5]"
-            >
-              {/* Smooth Animated Slide Image */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeSlide.id}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-                  className="absolute inset-0"
-                >
-                  <img
-                    src={activeSlide.url}
-                    alt={activeSlide.alt}
-                    className="w-full h-full object-cover object-center"
-                    fetchPriority="high"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/20 pointer-events-none" />
-                </motion.div>
-              </AnimatePresence>
+            <img
+              src={activeSlide.url}
+              alt={activeSlide.alt}
+              className="w-full h-full object-cover object-center"
+              fetchPriority="high"
+            />
+            {/* Multi-tier luxury dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/50" />
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-[0.5px]" />
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-              {/* Top Navigation Pill Badges */}
-              <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                <div className="bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/40 shadow-md flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] uppercase tracking-wider font-sans font-semibold text-[#171717]">
-                    {activeSlide.badge}
-                  </span>
-                </div>
+      {/* Top Spacer for floating header */}
+      <div className="h-28 sm:h-32 pointer-events-none" />
 
-                <div className="bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-white text-[10px] font-sans font-semibold tracking-wider">
-                  0{currentSlide + 1} / 0{HERO_SLIDES.length}
-                </div>
-              </div>
+      {/* Main Center Content: Grand Editorial Headline */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full my-auto py-10 sm:py-16">
+        <div className="max-w-4xl">
 
-              {/* On-Image Slider Arrow Navigation Controls */}
-              <div className="absolute inset-y-0 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-                <button
-                  onClick={handlePrev}
-                  className="w-10 h-10 rounded-full bg-white/90 hover:bg-[#C59B51] text-[#171717] hover:text-white border border-white/40 shadow-lg flex items-center justify-center transition-all duration-300 pointer-events-auto backdrop-blur-xs active:scale-95"
-                  aria-label="Previous image"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="w-10 h-10 rounded-full bg-white/90 hover:bg-[#C59B51] text-[#171717] hover:text-white border border-white/40 shadow-lg flex items-center justify-center transition-all duration-300 pointer-events-auto backdrop-blur-xs active:scale-95"
-                  aria-label="Next image"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
+          {/* Editorial Eyebrow Tag */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center space-x-2.5 mb-5 sm:mb-6"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#DFC088]" />
+            <span className="text-xs sm:text-[13px] tracking-[0.24em] font-sans uppercase text-[#DFC088] font-medium">
+              Welcome to Mewari Villa · Udaipur
+            </span>
+          </motion.div>
 
-              {/* Bottom Floating Information Card */}
-              <div className="absolute bottom-5 left-5 right-5 z-10">
-                <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-[#EAE4D9] shadow-xl flex items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center space-x-2 mb-0.5">
-                      <span className="w-3 h-px bg-[#C59B51]" />
-                      <p className="text-[10px] font-sans uppercase tracking-wider text-[#C59B51] font-semibold">
-                        {activeSlide.tag}
-                      </p>
-                    </div>
-                    <h3 className="text-sm sm:text-base font-serif font-medium text-[#171717] leading-snug">
-                      {activeSlide.title}
-                    </h3>
-                    <p className="text-[11px] font-body text-[#666666] hidden sm:block mt-0.5">
-                      {activeSlide.subtitle}
-                    </p>
-                  </div>
+          {/* Headline with Signature Editorial Italic Contrast */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal text-white leading-[1.06] tracking-tight mb-8"
+          >
+            Relaxation Begins
+            <span className="block font-editorial-italic font-normal text-[#E8CE9F] mt-1 sm:mt-2">
+              With Refined Comfort
+            </span>
+          </motion.h1>
 
-                  <div className="shrink-0">
-                    <button
-                      onClick={onOpenEnquiry}
-                      className="px-3.5 py-2 bg-[#C59B51] hover:bg-[#B3873E] text-white text-[10px] uppercase tracking-wider font-sans font-semibold rounded-lg transition-colors shadow-xs"
-                    >
-                      Reserve
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </motion.div>
-          </div>
         </div>
+      </div>
 
-        {/* Press / Trust Bar */}
-        <div className="mt-14 pt-8 border-t border-[#EAE4D9]">
-          <p className="text-center text-[10px] uppercase tracking-[0.24em] font-sans text-[#8C8C8C] mb-5">
-            Trusted by discerning travellers worldwide
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
-            <span className="font-serif text-lg tracking-widest text-[#525252] font-semibold">Forbes</span>
-            <span className="font-serif text-lg tracking-widest text-[#525252] font-semibold">RobbReport</span>
-            <span className="font-serif text-lg tracking-widest text-[#525252] font-semibold">MANSION GLOBAL</span>
-            <span className="font-serif text-base tracking-widest text-[#525252] font-medium">Condé Nast Traveller</span>
-            <span className="font-serif text-lg tracking-widest text-[#525252] font-semibold">TripAdvisor</span>
-          </div>
-        </div>
+      {/* Bottom Row: Trust Social Proof + Subtext + CTA Pill */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full pb-10 sm:pb-14">
+        <div className="pt-8 border-t border-white/15 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
 
-        {/* Floating Property Search / Filter Bar (Luxora Signature) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-10 bg-white rounded-2xl p-4 sm:p-5 shadow-xl border border-[#EAE4D9]"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
-
-            {/* Location */}
-            <div className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#FAF8F5] transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#C59B51]">
-                <MapPin className="w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider font-sans text-[#8C8C8C]">Location</span>
-                <span className="text-xs font-sans font-semibold text-[#171717]">Lake Pichola, Udaipur</span>
-              </div>
+          {/* Left: Social Proof Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex items-center space-x-4"
+          >
+            {/* Overlapping Avatars */}
+            <div className="flex -space-x-2.5 overflow-hidden">
+              {GUEST_AVATARS.map((avatar, idx) => (
+                <img
+                  key={idx}
+                  src={avatar}
+                  alt="Verified Hotel Guest"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-white/30 object-cover"
+                />
+              ))}
             </div>
 
-            {/* Suite Type */}
-            <div className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#FAF8F5] transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#C59B51]">
-                <Home className="w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider font-sans text-[#8C8C8C]">Suite Category</span>
-                <span className="text-xs font-sans font-semibold text-[#171717]">All Luxury Suites</span>
-              </div>
-            </div>
-
-            {/* Price Range */}
-            <div className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#FAF8F5] transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#C59B51]">
-                <IndianRupee className="w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider font-sans text-[#8C8C8C]">Tariff Range</span>
-                <span className="text-xs font-sans font-semibold text-[#171717]">₹3,500 – ₹10,000+</span>
-              </div>
-            </div>
-
-            {/* Guests */}
-            <div className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#FAF8F5] transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#C59B51]">
-                <Users className="w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider font-sans text-[#8C8C8C]">Occupancy</span>
-                <span className="text-xs font-sans font-semibold text-[#171717]">1–5 Guests / Room</span>
-              </div>
-            </div>
-
-            {/* Action Button */}
+            {/* Stars & Rating Copy */}
             <div>
+              <div className="flex items-center space-x-1 mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-[#DFC088] text-[#DFC088]" />
+                ))}
+                <span className="text-white font-sans text-xs font-semibold ml-1.5">4.9</span>
+              </div>
+              <p className="text-xs font-sans text-white/75 tracking-wide">
+                850+ Verified Guest Reviews
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Right: Subtext & Action Pill Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="flex flex-col sm:flex-row sm:items-center gap-5 lg:max-w-xl"
+          >
+            <p className="text-xs sm:text-sm font-body text-white/80 leading-relaxed">
+              Unwind in a serene retreat designed for refined comfort and timeless elegance, where every detail is crafted to provide the perfect luxurious lakeside stay.
+            </p>
+
+            <div className="flex items-center space-x-3 flex-shrink-0">
               <button
-                onClick={onOpenEnquiry}
-                className="w-full h-full py-3.5 px-5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-[0.14em] font-sans font-semibold rounded-xl shadow-md flex items-center justify-center space-x-2 transition-all active:scale-95"
+                id="hero-explore-suites-cta"
+                onClick={onExploreVilla}
+                className="inline-flex items-center space-x-2 px-6 py-3.5 bg-[#9E763B] hover:bg-[#825E29] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-full shadow-lg transition-all duration-300 hover:shadow-xl active:scale-95 group"
               >
-                <Search className="w-4 h-4" />
-                <span>Check Availability</span>
+                <span>Explore Suites</span>
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </div>
+          </motion.div>
 
+        </div>
+
+        {/* Minimalist Slide Navigation & Indicators */}
+        <div className="mt-8 flex items-center justify-between text-white/60 text-xs font-sans">
+          <div className="flex items-center space-x-2">
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`h-1.5 transition-all duration-300 rounded-full ${
+                  currentSlide === idx ? 'w-8 bg-[#DFC088]' : 'w-2 bg-white/30 hover:bg-white/60'
+                }`}
+              />
+            ))}
           </div>
-        </motion.div>
+
+          <div className="flex items-center space-x-3">
+            <span className="text-[11px] tracking-wider uppercase text-white/70">
+              0{currentSlide + 1} / 0{HERO_SLIDES.length} · {activeSlide.tag}
+            </span>
+            <div className="flex items-center space-x-1.5">
+              <button
+                onClick={handlePrev}
+                aria-label="Previous slide"
+                className="w-8 h-8 rounded-full border border-white/20 hover:border-white/60 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleNext}
+                aria-label="Next slide"
+                className="w-8 h-8 rounded-full border border-white/20 hover:border-white/60 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
 
       </div>
     </section>

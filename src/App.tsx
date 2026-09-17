@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { InfoBar } from './components/InfoBar';
-import { RoomsSection } from './components/RoomsSection';
-import { SingleRoomPage } from './components/SingleRoomPage';
 import { IntroStory } from './components/IntroStory';
-import { LocationHighlight } from './components/LocationHighlight';
+import { RoomsSection } from './components/RoomsSection';
+import { AmenitiesSection } from './components/AmenitiesSection';
+import { SpacesShowcase } from './components/SpacesShowcase';
+import { SingleRoomPage } from './components/SingleRoomPage';
 import { VillaSuiteFeature } from './components/VillaSuiteFeature';
 import { RestaurantSection } from './components/RestaurantSection';
-import { ExperiencesSection } from './components/ExperiencesSection';
-import { AmenitiesSection } from './components/AmenitiesSection';
-import { GallerySection } from './components/GallerySection';
+import { GalleryPage } from './components/GalleryPage';
+import { ExplorePage } from './components/ExplorePage';
 import { WhyMewariVilla } from './components/WhyMewariVilla';
 import { InquirySection } from './components/InquirySection';
 import { ContactLocation } from './components/ContactLocation';
@@ -22,10 +22,10 @@ import { InquiryModal } from './components/InquiryModal';
 export default function App() {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [preselectedRoom, setPreselectedRoom] = useState<string>('Any Room');
-  const [currentView, setCurrentView] = useState<'home' | 'room'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'room' | 'gallery' | 'explore'>('home');
   const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
 
-  // Synchronize view with URL hash (e.g. #/room/villa-suite-lake-view)
+  // Synchronize view with URL hash (e.g. #/room/villa-suite-lake-view, #/gallery, #/explore)
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -38,8 +38,20 @@ export default function App() {
           return;
         }
       }
+      if (hash === '#/gallery' || hash.startsWith('#/gallery')) {
+        setCurrentView('gallery');
+        setActiveRoomId(null);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        return;
+      }
+      if (hash === '#/explore' || hash.startsWith('#/explore')) {
+        setCurrentView('explore');
+        setActiveRoomId(null);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        return;
+      }
       // If hash is home or in-page anchor (e.g. #stay, #hero-section)
-      if (!hash.startsWith('#/room/')) {
+      if (!hash.startsWith('#/room/') && !hash.startsWith('#/gallery') && !hash.startsWith('#/explore')) {
         setCurrentView('home');
         setActiveRoomId(null);
       }
@@ -54,6 +66,20 @@ export default function App() {
     window.location.hash = `#/room/${roomId}`;
     setActiveRoomId(roomId);
     setCurrentView('room');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigateToGallery = () => {
+    window.location.hash = '#/gallery';
+    setCurrentView('gallery');
+    setActiveRoomId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigateToExplore = () => {
+    window.location.hash = '#/explore';
+    setCurrentView('explore');
+    setActiveRoomId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -75,28 +101,24 @@ export default function App() {
   };
 
   const handleExploreVilla = () => {
-    const el = document.getElementById('about');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleExploreUdaipur = () => {
-    const el = document.getElementById('experiences');
+    const el = document.getElementById('stay');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#171717] flex flex-col font-body selection:bg-[#C59B51]/20 selection:text-[#171717]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-body selection:bg-[#9E763B]/20 selection:text-[#1C1917]">
       {/* 1. Header with Transparent to Solid Scroll Effect */}
       <Header
         onOpenEnquiry={() => handleOpenEnquiry()}
         onNavigateHome={handleBackToHome}
+        onNavigateGallery={handleNavigateToGallery}
+        onNavigateExplore={handleNavigateToExplore}
+        isInnerPage={currentView !== 'home'}
       />
 
-      {/* Main Content: Single Room Page vs Home Landing */}
+      {/* Main Content: Single Room Page vs Gallery Page vs Explore Page vs Home Landing */}
       <main className="flex-grow">
         {currentView === 'room' && activeRoomId ? (
           <SingleRoomPage
@@ -105,9 +127,19 @@ export default function App() {
             onSelectRoom={handleNavigateToRoom}
             onOpenEnquiry={handleOpenEnquiry}
           />
+        ) : currentView === 'gallery' ? (
+          <GalleryPage
+            onBack={handleBackToHome}
+            onOpenEnquiry={handleOpenEnquiry}
+          />
+        ) : currentView === 'explore' ? (
+          <ExplorePage
+            onBack={handleBackToHome}
+            onOpenEnquiry={handleOpenEnquiry}
+          />
         ) : (
           <>
-            {/* 2. Hero Section */}
+            {/* 2. Hero Section (Grand Edge-to-Edge Editorial) */}
             <Hero
               onOpenEnquiry={() => handleOpenEnquiry()}
               onExploreVilla={handleExploreVilla}
@@ -116,49 +148,43 @@ export default function App() {
             {/* 2b. Info Bar — check-in, address, phone */}
             <InfoBar />
 
-            {/* 3. Rooms & Suites Slider */}
+            {/* 3. About: Redefining Hospitality with Timeless Elegance & Stats Divider */}
+            <IntroStory />
+
+            {/* 4. Designed Spaces for Refined Stays (2x2 Luxury Grid) */}
             <RoomsSection
               onEnquireRoom={(room) => handleOpenEnquiry(room)}
               onViewRoomPage={handleNavigateToRoom}
             />
 
-            {/* 4. Discover Refined Luxury / Intro Story */}
-            <IntroStory />
+            {/* 5. Facilities Available to Guests (Minimalist Luxury Icons) */}
+            <AmenitiesSection />
 
-            {/* 5. Location / Lake Pichola Spotlight */}
-            <LocationHighlight onExploreUdaipur={handleExploreUdaipur} />
+            {/* 6. Essential Spaces to Enjoy at Mewari Villa (Tabbed Showcase) */}
+            <SpacesShowcase onEnquire={(space) => handleOpenEnquiry(space)} />
 
-            {/* 5b. Villa Suite Flagship Feature */}
+            {/* 7. Villa Suite Flagship Feature */}
             <VillaSuiteFeature
               onEnquireSuite={() => handleOpenEnquiry('Villa Suite Lake View')}
               onViewRoomPage={handleNavigateToRoom}
             />
 
-            {/* 6. Jalsa Lake View Rooftop Restaurant */}
+            {/* 8. Jalsa Lake View Rooftop Restaurant */}
             <RestaurantSection onEnquireDining={() => handleOpenEnquiry('Dining')} />
 
-            {/* 7. Curated Udaipur Experiences */}
-            <ExperiencesSection onEnquireExperience={(exp) => handleOpenEnquiry(exp)} />
-
-            {/* 8. Verified Hotel Amenities */}
-            <AmenitiesSection />
-
-            {/* 9. Masonry Editorial Gallery with Lightbox */}
-            <GallerySection />
-
-            {/* 10. Why Mewari Villa Minimal Luxury Section */}
+            {/* 9. Why Mewari Villa Minimal Luxury Section */}
             <WhyMewariVilla />
 
-            {/* 11. Core Conversion: Plan Your Stay Inquiry Form */}
+            {/* 10. Core Conversion: Plan Your Stay Inquiry Form */}
             <InquirySection
               preselectedRoom={preselectedRoom}
               onClearPreselectedRoom={() => setPreselectedRoom('Any Room')}
             />
 
-            {/* 12. Contact & Location with Embedded Google Map */}
+            {/* 11. Contact & Location with Embedded Google Map */}
             <ContactLocation />
 
-            {/* 13. Final Cinematic CTA */}
+            {/* 12. Final Cinematic CTA */}
             <FinalCTA onOpenEnquiry={() => handleOpenEnquiry()} />
           </>
         )}

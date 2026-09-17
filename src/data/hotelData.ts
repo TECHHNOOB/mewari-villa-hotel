@@ -14,8 +14,8 @@ export const HOTEL_INFO = {
   checkIn: '12:00 PM',
   checkOut: '10:00 AM',
   parkingNote: 'Car parking available 200m away, before Chandpole Parking',
-  googleMapsUrl: 'https://maps.google.com/?q=Mewari+Villa+Purohit+Ka+Khurra+Udaipur',
-  googleMapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3628.1873099951664!2d73.6802874!3d24.5828453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e564d2d480c1%3A0xb3574c8789d38c64!2sMewari%20Villa!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin',
+  googleMapsUrl: 'https://maps.app.goo.gl/4xDueRRi95HmiDWB6',
+  googleMapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3628.136!2d73.6806449!3d24.584363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e567b36897d7%3A0xca74a97184503f5!2sHotel%20Mewari%20Villa%20Udaipur%20%7C%20Lake%20View%20Hotel%20in%20Udaipur!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin',
 };
 
 // 100% REAL PHOTOGRAPHS FROM MEWARIVILLA.COM

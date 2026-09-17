@@ -85,14 +85,44 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
     setErrorMsg('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.fullName.trim()) {
-      setErrorMsg('Please enter your full name.');
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow navigation, deletion, tab, and copy/paste shortcuts
+    if (
+      ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key) ||
+      (e.ctrlKey || e.metaKey)
+    ) {
       return;
     }
-    if (!formData.phone.trim()) {
-      setErrorMsg('Please enter your phone or WhatsApp number.');
+    // Block any non-digit character (strictly 0-9 only)
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Strip out all non-digits and cap strictly at 10 digits
+    const numericOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setFormData((prev) => ({ ...prev, phone: numericOnly }));
+    setErrorMsg('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.fullName.trim() || formData.fullName.trim().length < 2) {
+      setErrorMsg('Please enter your full name (at least 2 characters).');
+      return;
+    }
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    if (!phoneDigits) {
+      setErrorMsg('Please enter your 10-digit mobile or WhatsApp number (numbers only).');
+      return;
+    }
+    if (phoneDigits.length !== 10) {
+      setErrorMsg('Please enter a valid 10-digit mobile number (exactly 10 digits required).');
+      return;
+    }
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      setErrorMsg('Please enter a valid email address.');
       return;
     }
 
@@ -101,7 +131,7 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
     await sendBookingInquiry({
       source: 'Quick Inquiry Modal',
       guestName: formData.fullName,
-      guestPhone: formData.phone,
+      guestPhone: `+91 ${formData.phone}`,
       guestEmail: formData.email,
       roomPreference: formData.roomPreference,
       checkInDate: formData.checkIn,
@@ -231,15 +261,28 @@ Special Request: ${formData.message || 'None'}`;
                   <label className="block text-[11px] uppercase tracking-wider text-[#404040] font-sans font-semibold mb-1">
                     Phone / WhatsApp <span className="text-[#C59B51]">*</span>
                   </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+91 98765 43210"
-                    required
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#EAE4D9] text-[#171717] text-xs font-sans rounded-lg focus:outline-hidden focus:border-[#C59B51] focus:bg-white"
-                  />
+                  <div className="flex rounded-lg border border-[#EAE4D9] overflow-hidden focus-within:border-[#9E763B] transition-colors bg-[#FAF8F5]">
+                    <div className="px-3 py-2 bg-[#F3EFE9] border-r border-[#EAE4D9] text-xs font-sans font-medium text-[#78716C] flex items-center space-x-1.5 shrink-0 select-none">
+                      <span>🇮🇳</span>
+                      <span>+91</span>
+                    </div>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      name="phone"
+                      value={formData.phone}
+                      onKeyDown={handlePhoneKeyDown}
+                      onChange={handlePhoneChange}
+                      placeholder="98765 43210"
+                      required
+                      className="w-full px-3 py-2 bg-transparent text-[#171717] text-xs font-sans focus:outline-none"
+                    />
+                  </div>
+                  <span className="text-[10px] text-[#78716C] font-sans mt-1 block">
+                    Numbers only · 10 digits
+                  </span>
                 </div>
               </div>
 

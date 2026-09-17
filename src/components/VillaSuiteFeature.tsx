@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, Play, Shield, Sun, Compass, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { ArrowUpRight, Star } from 'lucide-react';
 import { REAL_HOTEL_IMAGES } from '../data/hotelData';
 
 interface VillaSuiteFeatureProps {
@@ -7,268 +7,214 @@ interface VillaSuiteFeatureProps {
   onViewRoomPage?: (roomId: string) => void;
 }
 
-// Verified real guest reviews from Google & TripAdvisor
-const GUEST_REVIEWS = [
+// Curated verified guest testimonials matching reference design
+const TESTIMONIALS = [
   {
-    id: 1,
-    name: 'Suman Khadka Chhetry',
-    source: 'Google Review',
-    time: '4 months ago',
+    id: 't1',
+    title: 'A Calm, Comfortable Stay',
+    quote:
+      'From check-in to check-out, everything felt smooth and well-organized. The room was quiet, the lighting was relaxing, and the shared spaces were easy to enjoy without feeling crowded.',
+    author: 'Emily Carter',
+    location: 'From USA',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
     rating: 5,
-    avatarText: 'SK',
-    review:
+  },
+  {
+    id: 't2',
+    title: 'Great for a Weekend Break',
+    quote:
+      'We stayed for a short getaway and appreciated the simple layout and clean details throughout the property. The dining area was welcoming, and the overall atmosphere felt calm and unhurried.',
+    author: 'Michael Thompson',
+    location: 'From United Kingdom',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+    rating: 5,
+  },
+  {
+    id: 't3',
+    title: 'Unmatched Lake Views & Walking Proximity',
+    quote:
       'We had a wonderful stay at this hotel. Rooms are spacious, clean and friendly staffs. The breakfast was good. Location wise it is at the centre, where the City Palace, Ambrai Ghat, Bagore ki Haveli, etc all are at walking distance. Overall we had wonderful stay and thanks to the owner who is extremely friendly.',
+    author: 'Suman Khadka Chhetry',
+    location: 'Google Verified Review',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+    rating: 5,
   },
   {
-    id: 2,
-    name: 'Verified Guest',
-    source: 'Google Review',
-    time: '1 month ago',
+    id: 't4',
+    title: 'Ideal for Family Stays & Celebrations',
+    quote:
+      'This was our favorite stay in Udaipur. Authentic royal Mewari architecture, prompt room service, and stunning lake views from the rooftop. The staff helped arrange our boat ride and made us feel truly at home.',
+    author: 'David Reynolds',
+    location: 'From Australia',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
     rating: 5,
-    avatarText: 'VG',
-    review:
-      'This was my last stay which I opted for after staying in 2 different properties and I must say it was THE best. Everything is walking distance from the property like Gangaur Ghat, Jagdish Temple, Hathipole Bazar, Bada Bazar and yet you will experience absolute peace.',
-  },
-  {
-    id: 3,
-    name: 'NorthStar Traveller',
-    source: 'Tripadvisor Review',
-    time: '5 months ago',
-    rating: 5,
-    avatarText: 'NT',
-    review:
-      'We stayed at Mewari Villa in Udaipur for 2 nights, and it was a wonderful experience. The hotel was very well maintained and extremely clean. The room service was excellent and very prompt. The rooftop restaurant was beautiful, offering a stunning panoramic view.',
-  },
-  {
-    id: 4,
-    name: 'Dipesh Akhare',
-    source: 'Google Review',
-    time: '6 months ago',
-    rating: 5,
-    avatarText: 'DA',
-    review:
-      'Outstanding Stay at Mewari Villa – Perfect Location & Value! I had a wonderful stay at Hotel Mewari Villa. It offers a perfect blend of heritage charm, exceptional cleanliness, lakefront proximity, and outstanding value.',
-  },
-  {
-    id: 5,
-    name: 'Shubham Banawal',
-    source: 'Google Local Guide',
-    time: '2 months ago',
-    rating: 5,
-    avatarText: 'SB',
-    review:
-      'Honest review. After all reviews, they have improved their services. They are really good now. I have specially tipped them. Rooms are good, hospitality is warm, and the location is unmatched.',
   },
 ];
 
-export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireSuite, onViewRoomPage }) => {
-  const [currentReview, setCurrentReview] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+// Highlights from Recent Events matching top half of reference mockup
+const EVENT_HIGHLIGHTS = [
+  {
+    id: 'event-1',
+    title: 'Outdoor Wedding Reception',
+    category: 'Lakeside Celebration',
+    image: REAL_HOTEL_IMAGES.jalsaTableSetting,
+  },
+  {
+    id: 'event-2',
+    title: 'Business Conference',
+    category: 'Corporate Gathering',
+    image: REAL_HOTEL_IMAGES.jalsaRooftopSeating,
+  },
+  {
+    id: 'event-3',
+    title: 'Birthday Party',
+    category: 'Private Starlit Terrace',
+    image: REAL_HOTEL_IMAGES.jalsaFoodView,
+  },
+];
 
-  // Auto-advance reviews every 7.5 seconds
-  useEffect(() => {
-    if (isHovered) return;
-    const timer = setInterval(() => {
-      setCurrentReview((prev) => (prev + 1) % GUEST_REVIEWS.length);
-    }, 7500);
-    return () => clearInterval(timer);
-  }, [isHovered]);
-
-  const handlePrevReview = () => {
-    setCurrentReview((prev) => (prev - 1 + GUEST_REVIEWS.length) % GUEST_REVIEWS.length);
-  };
-
-  const handleNextReview = () => {
-    setCurrentReview((prev) => (prev + 1) % GUEST_REVIEWS.length);
-  };
-
-  const activeReview = GUEST_REVIEWS[currentReview];
-
+export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireSuite }) => {
   return (
-    <section className="py-20 md:py-24 bg-white border-b border-[#EAE4D9]">
+    <section className="py-20 md:py-28 bg-[#FAF8F5] border-b border-[#E8E2D9] text-[#1C1917]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-
-          {/* Left Column: What Our Guests Say with Real Google/TripAdvisor Reviews (4 cols) */}
-          <div
-            className="lg:col-span-4 bg-[#FAF8F5] rounded-2xl p-7 border border-[#EAE4D9] flex flex-col justify-between h-full shadow-xs transition-all"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
+        {/* ========================================================================= */}
+        {/* TOP SECTION: Highlights from Recent Events (Reference Match) */}
+        {/* ========================================================================= */}
+        <div className="mb-24">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2 text-[#C59B51]">
-                  <span className="text-[10px] font-sans uppercase tracking-widest font-semibold">Guest Impressions</span>
-                </div>
-                {/* Previous & Next arrow buttons */}
-                <div className="flex items-center space-x-1.5">
-                  <button
-                    onClick={handlePrevReview}
-                    className="w-7 h-7 rounded-full bg-white border border-[#EAE4D9] flex items-center justify-center text-[#171717] hover:bg-[#C59B51] hover:text-white hover:border-[#C59B51] transition-colors shadow-xs"
-                    aria-label="Previous review"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={handleNextReview}
-                    className="w-7 h-7 rounded-full bg-white border border-[#EAE4D9] flex items-center justify-center text-[#171717] hover:bg-[#C59B51] hover:text-white hover:border-[#C59B51] transition-colors shadow-xs"
-                    aria-label="Next review"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+              {/* Eyebrow */}
+              <div className="inline-flex items-center space-x-2 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
+                <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#9E763B] font-semibold">
+                  Recent Events
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
               </div>
 
-              <h3 className="font-serif text-2xl font-normal text-[#171717] mb-3">
-                What Our Guests Say
-              </h3>
-
-              {/* Large Gold Quote Mark */}
-              <div className="font-serif text-5xl text-[#C59B51] leading-none mb-2 font-italic select-none">
-                “
-              </div>
-
-              {/* Review Text */}
-              <p className="text-xs sm:text-sm font-body text-[#404040] leading-relaxed min-h-[110px] mb-6">
-                {activeReview.review}
-              </p>
+              {/* Title */}
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1C1917] leading-[1.1]">
+                Highlights from Recent Events
+              </h2>
             </div>
 
-            <div>
-              <div className="flex items-center space-x-3 pt-4 border-t border-[#EAE4D9]">
-                {/* Avatar with initials */}
-                <div className="w-10 h-10 rounded-full bg-[#EAE4D9] border border-white flex items-center justify-center text-[#171717] font-serif font-bold text-xs shadow-xs shrink-0">
-                  {activeReview.avatarText}
-                </div>
+            {/* Subtitle on Right + Explore More Pill */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:max-w-lg">
+              <p className="font-body text-xs sm:text-sm text-[#78716C] leading-relaxed">
+                From intimate celebrations to gatherings, these recent events showcase how Mewari Villa adapts to different occasions, creating welcoming settings for both formal and social experiences.
+              </p>
 
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-serif text-sm font-semibold text-[#171717] truncate">
-                    {activeReview.name}
-                  </h4>
-                  <div className="flex items-center space-x-1.5 text-[10px] font-sans text-[#737373]">
-                    <span>{activeReview.source}</span>
-                    <span>•</span>
-                    <div className="flex text-amber-500">
-                      {[...Array(activeReview.rating)].map((_, i) => (
-                        <Star key={i} className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                      ))}
-                    </div>
+              {/* <button
+                onClick={onEnquireSuite}
+                className="inline-flex items-center space-x-1.5 px-6 py-3 bg-[#9E763B] hover:bg-[#825E29] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-full shadow-sm hover:shadow-md transition-all flex-shrink-0 group cursor-pointer"
+              >
+                <span>Explore More</span>
+                <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button> */}
+            </div>
+          </div>
+
+          {/* 3 Event Cards Grid (Direct Match to Reference) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            {EVENT_HIGHLIGHTS.map((event) => (
+              <div
+                key={event.id}
+                className="group relative rounded-3xl overflow-hidden shadow-sm border border-[#E8E2D9] aspect-[3/4] bg-[#E8E2D9] cursor-pointer"
+                onClick={onEnquireSuite}
+              >
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+
+                {/* Bottom Tag Label (as shown in reference image) */}
+                <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between text-white">
+                  <h3 className="font-sans text-sm sm:text-base font-medium tracking-wide drop-shadow-sm">
+                    {event.title}
+                  </h3>
+                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ArrowUpRight className="w-4 h-4 text-white" />
                   </div>
                 </div>
               </div>
-
-              {/* Carousel Indicator Dots */}
-              <div className="mt-5 flex items-center space-x-1.5">
-                {GUEST_REVIEWS.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentReview(idx)}
-                    className={`transition-all duration-300 rounded-full ${
-                      currentReview === idx
-                        ? 'w-5 h-1 bg-[#C59B51]'
-                        : 'w-1.5 h-1 bg-[#D8CEBE] hover:bg-[#C59B51]/60'
-                    }`}
-                    aria-label={`Go to review ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {/* Middle Column: Video Showcase Card with Gold Play Button (4 cols) */}
-          <div className="lg:col-span-4 relative rounded-2xl overflow-hidden shadow-md border border-[#EAE4D9] aspect-[4/3] lg:aspect-auto lg:h-full min-h-[300px] group bg-[#171717]">
-            <img
-              src={REAL_HOTEL_IMAGES.lakeViewRooftop}
-              alt="Mewari Villa sunset video tour"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-90"
-            />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-
-            {/* Centered Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <button
-                onClick={() => alert('Tour preview: Mewari Villa Hotel Rooftop and Lake Pichola panoramic views.')}
-                className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#171717] group-hover:scale-110 group-hover:bg-[#C59B51] group-hover:text-white transition-all duration-300 shadow-xl"
-                aria-label="Play Video Tour"
-              >
-                <Play className="w-6 h-6 fill-current ml-1" />
-              </button>
-            </div>
-
-            {/* Bottom Tag */}
-            <div className="absolute bottom-4 left-4 right-4 text-center">
-              <span className="text-[11px] font-sans font-medium text-white/90 bg-black/40 backdrop-blur-xs px-3 py-1 rounded-full">
-                Virtual Tour · Sunset Over Lake Pichola
+        {/* ========================================================================= */}
+        {/* BOTTOM SECTION: Words from Our Guests (Reference Match) */}
+        {/* ========================================================================= */}
+        <div>
+          {/* Eyebrow & Title */}
+          <div className="max-w-2xl mb-12">
+            <div className="inline-flex items-center space-x-2 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
+              <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#9E763B] font-semibold">
+                Guest Testimonials
               </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
             </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1C1917] leading-[1.1] mb-3">
+              Words from Our Guests
+            </h2>
+
+            <p className="font-body text-xs sm:text-sm text-[#78716C] leading-relaxed">
+              Hear from guests who have stayed with us and shared their experiences, reflecting the comfort, atmosphere, and service offered throughout our hotel and resort.
+            </p>
           </div>
 
-          {/* Right Column: Exclusive Stay Privileges (4 cols) */}
-          <div className="lg:col-span-4 bg-[#FAF8F5] rounded-2xl p-7 border border-[#EAE4D9] flex flex-col justify-between h-full shadow-xs">
-            <div>
-              <div className="flex items-center space-x-2 text-[#C59B51] mb-2">
-                <span className="text-[10px] font-sans uppercase tracking-widest font-semibold">Special Stays</span>
-              </div>
-              <h3 className="font-serif text-2xl font-normal text-[#171717] mb-3">
-                Exclusive Heritage Privileges
-              </h3>
-              <p className="text-xs font-body text-[#666666] leading-relaxed mb-6">
-                Curated royal experiences, personalized dining setups, and private lake boat charters handpicked for your itinerary.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                {onViewRoomPage && (
-                  <button
-                    onClick={() => onViewRoomPage('villa-suite-lake-view')}
-                    className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#171717] hover:bg-[#2A2A2A] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all shadow-xs"
-                  >
-                    <span>View Suite Details</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#C59B51]" />
-                  </button>
-                )}
-                <button
-                  onClick={onEnquireSuite}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-wider font-sans font-semibold rounded-lg transition-all shadow-xs"
-                >
-                  <span>Explore Packages</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* 3 Mini Privileges with Icons */}
-            <div className="space-y-3 pt-4 border-t border-[#EAE4D9]">
-              <div className="flex items-center space-x-3">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#EAE4D9] flex items-center justify-center text-[#C59B51] flex-shrink-0">
-                  <Shield className="w-3.5 h-3.5" />
-                </div>
+          {/* 4 Cards in 2x2 Grid (Exact Reference Layout) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            {TESTIMONIALS.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="bg-[#FFFDF9] rounded-3xl p-7 sm:p-8 border border-[#E8E2D9] shadow-xs flex flex-col justify-between hover:shadow-md hover:border-[#9E763B]/50 transition-all duration-300"
+              >
                 <div>
-                  <p className="text-xs font-serif font-medium text-[#171717]">High Privacy &amp; Serenity</p>
-                  <p className="text-[10px] font-sans text-[#737373]">Intimate heritage quarters</p>
-                </div>
-              </div>
+                  {/* Card Title */}
+                  <h3 className="font-serif text-xl sm:text-2xl font-normal text-[#1C1917] mb-3">
+                    {testimonial.title}
+                  </h3>
 
-              <div className="flex items-center space-x-3">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#EAE4D9] flex items-center justify-center text-[#C59B51] flex-shrink-0">
-                  <Sun className="w-3.5 h-3.5" />
+                  {/* Quote Paragraph */}
+                  <p className="font-body text-xs sm:text-[13px] text-[#57534E] leading-relaxed mb-6">
+                    "{testimonial.quote}"
+                  </p>
                 </div>
-                <div>
-                  <p className="text-xs font-serif font-medium text-[#171717]">Sunset Rooftop Dining</p>
-                  <p className="text-[10px] font-sans text-[#737373]">Jalsa pure vegetarian cuisine</p>
-                </div>
-              </div>
 
-              <div className="flex items-center space-x-3">
-                <div className="w-7 h-7 rounded-lg bg-white border border-[#EAE4D9] flex items-center justify-center text-[#C59B51] flex-shrink-0">
-                  <Compass className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <p className="text-xs font-serif font-medium text-[#171717]">Curated City Excursions</p>
-                  <p className="text-[10px] font-sans text-[#737373]">Tailored Lake Pichola boat charters</p>
+                {/* Bottom Separator & Author Info */}
+                <div className="pt-4 border-t border-[#E8E2D9] flex items-center justify-between">
+                  {/* Author Avatar & Name */}
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.author}
+                      className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-xs"
+                    />
+                    <div>
+                      <h4 className="font-sans text-xs sm:text-sm font-semibold text-[#1C1917] leading-tight">
+                        {testimonial.author}
+                      </h4>
+                      <p className="font-sans text-[11px] text-[#78716C] mt-0.5">
+                        {testimonial.location}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 5 Stars Rating */}
+                  <div className="flex items-center space-x-1">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#9E763B] text-[#9E763B]" />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
         </div>

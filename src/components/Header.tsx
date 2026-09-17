@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Phone, MessageSquare, ChevronRight } from 'lucide-react';
+import { Menu, X, Phone, ArrowUpRight, ChevronRight } from 'lucide-react';
 import { HOTEL_INFO } from '../data/hotelData';
 
 interface HeaderProps {
   onOpenEnquiry: (room?: string) => void;
   onNavigateHome?: () => void;
+  onNavigateGallery?: () => void;
+  onNavigateExplore?: () => void;
+  isInnerPage?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onOpenEnquiry,
+  onNavigateHome,
+  onNavigateGallery,
+  onNavigateExplore,
+  isInnerPage = false,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -21,16 +30,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome })
 
   const navLinks = [
     { label: 'Home', href: '#hero-section' },
+    { label: 'About Us', href: '#about' },
     { label: 'Rooms & Suites', href: '#stay' },
     { label: 'Dining', href: '#dining' },
-    { label: 'Experiences', href: '#experiences' },
-    { label: 'Heritage', href: '#about' },
+    { label: 'Explore', href: '#/explore' },
+    { label: 'Gallery', href: '#/gallery' },
     { label: 'Contact', href: '#contact' },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    if (href === '#/gallery') {
+      if (onNavigateGallery) onNavigateGallery();
+      else window.location.hash = '#/gallery';
+      return;
+    }
+
+    if (href === '#/explore') {
+      if (onNavigateExplore) onNavigateExplore();
+      else window.location.hash = '#/explore';
+      return;
+    }
+
     if (onNavigateHome) {
       onNavigateHome();
       setTimeout(() => {
@@ -43,14 +65,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome })
     }
   };
 
+  const showSolidHeader = isInnerPage || isScrolled;
+
   return (
     <>
       <header
         id="main-header"
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
-            ? 'bg-white/95 backdrop-blur-md py-3.5 border-b border-[#EAE4D9] shadow-xs'
-            : 'bg-white/90 backdrop-blur-sm py-4 border-b border-[#F0ECE1]'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          showSolidHeader
+            ? 'bg-[#FAF8F5]/95 backdrop-blur-md py-3.5 border-b border-[#E8E2D9] shadow-xs text-[#1C1917]'
+            : 'bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-white'
+        }`}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
 
@@ -68,31 +93,39 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome })
             <img
               src="/mewari-villa-logo.png"
               alt="Hotel Mewari Villa"
-              className="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className={`h-11 sm:h-13 w-auto object-contain transition-all duration-300 group-hover:scale-105 ${
+                !showSolidHeader ? 'brightness-0 invert drop-shadow-md' : ''
+              }`}
             />
           </a>
 
           {/* Desktop Navigation */}
-          <nav id="desktop-nav" className="hidden md:flex items-center space-x-7">
+          <nav id="desktop-nav" className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="text-xs tracking-[0.08em] uppercase font-sans font-medium text-[#404040] hover:text-[#C59B51] transition-colors duration-200 relative py-1"
+                className={`text-[12px] tracking-[0.14em] uppercase font-sans font-medium transition-colors duration-300 relative py-1 hover:text-[#9E763B] ${
+                  showSolidHeader ? 'text-[#44403C]' : 'text-white/90 hover:text-white'
+                }`}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* Desktop Actions (Phone + Gold CTA) */}
+          {/* Desktop Actions (Phone + Gold CTA Pill) */}
           <div className="hidden sm:flex items-center space-x-5">
             <a
               href={`tel:${HOTEL_INFO.primaryPhone}`}
-              className="flex items-center space-x-2 text-xs font-sans text-[#525252] hover:text-[#171717] transition-colors"
+              className={`flex items-center space-x-2 text-xs font-sans transition-colors ${
+                showSolidHeader ? 'text-[#57534E] hover:text-[#1C1917]' : 'text-white/80 hover:text-white'
+              }`}
             >
-              <div className="w-7 h-7 rounded-full bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#C59B51]">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+                showSolidHeader ? 'bg-[#FAF8F5] border border-[#E8E2D9] text-[#9E763B]' : 'bg-white/15 border border-white/20 text-white'
+              }`}>
                 <Phone className="w-3.5 h-3.5" />
               </div>
               <span className="font-medium tracking-wide">{HOTEL_INFO.primaryPhone}</span>
@@ -101,18 +134,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenEnquiry, onNavigateHome })
             <button
               id="header-enquire-cta"
               onClick={() => onOpenEnquiry()}
-              className="px-5 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-xs uppercase tracking-[0.14em] font-sans font-semibold rounded-lg shadow-sm transition-all duration-300 hover:shadow-md active:scale-95"
+              className="inline-flex items-center space-x-1.5 px-5 py-2.5 bg-[#9E763B] hover:bg-[#825E29] text-white text-[11px] uppercase tracking-[0.16em] font-sans font-semibold rounded-full shadow-sm transition-all duration-300 hover:shadow-md active:scale-95 group"
             >
-              Book Stay
+              <span>Book Your Stay</span>
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
           </div>
 
           {/* Mobile Hamburger Button */}
-          <div className="flex sm:hidden items-center space-x-2">
+          <div className="flex lg:hidden items-center space-x-2">
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-10 h-10 flex items-center justify-center text-[#171717] rounded-lg border border-[#EAE4D9] bg-[#FAF8F5]"
+              className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all ${
+                showSolidHeader
+                  ? 'text-[#1C1917] border-[#E8E2D9] bg-[#FAF8F5]'
+                  : 'text-white border-white/30 bg-black/30 backdrop-blur-xs'
+              }`}
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

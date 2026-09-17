@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, ArrowLeft, Heart, Bed, Bath, Maximize, Eye } from 'lucide-react';
+import { ArrowUpRight, Bed, Users } from 'lucide-react';
 import { ROOMS } from '../data/hotelData';
 import { Room } from '../types';
 import { RoomModal } from './RoomModal';
@@ -11,168 +11,149 @@ interface RoomsSectionProps {
 
 export const RoomsSection: React.FC<RoomsSectionProps> = ({ onEnquireRoom, onViewRoomPage }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
 
-  const toggleFavorite = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
+  // Map room IDs to benchmark luxury labels matching reference design
+  const getRoomDisplayName = (room: Room) => {
+    switch (room.id) {
+      case 'deluxe-non-lake-view':
+        return 'Deluxe Room';
+      case 'super-deluxe-lake-view':
+        return 'Premier Room';
+      case 'super-deluxe-triple-sharing':
+        return 'Executive Suite';
+      case 'villa-suite-lake-view':
+        return 'Signature Suite';
+      default:
+        return room.name;
+    }
   };
 
-  const badges: { [key: string]: string } = {
-    'villa-suite-lake-view': 'FLAGSHIP SUITE',
-    'super-deluxe-lake-view': 'LAKE VIEW',
-    'super-deluxe-triple-sharing': 'FAMILY HERITAGE',
-    'deluxe-non-lake-view': 'HERITAGE CHARM',
+  const getRoomBedLabel = (room: Room) => {
+    if (room.id.includes('triple')) return '2 Beds';
+    return '1 Bed';
+  };
+
+  const getRoomPersonLabel = (room: Room) => {
+    if (room.id.includes('triple')) return '4 Person';
+    return '2 Person';
+  };
+
+  const handleCardClick = (room: Room) => {
+    if (onViewRoomPage) {
+      onViewRoomPage(room.id);
+    } else {
+      setSelectedRoom(room);
+    }
   };
 
   return (
     <section id="stay" className="py-20 md:py-28 bg-[#FAF8F5] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
 
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+        {/* Section Header: Matches Orrivaa Benchmark */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div>
-            <div className="flex items-center space-x-2.5 mb-2.5">
-              <span className="w-5 h-px bg-[#C59B51]" />
-              <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#C59B51] font-semibold">
-                Curated Accommodations
+            {/* Eyebrow Tag */}
+            <div className="inline-flex items-center space-x-2 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
+              <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#9E763B] font-semibold">
+                Featured Spaces
               </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#171717]">
-              Featured Suites &amp; Rooms
+
+            {/* Headline with Signature Editorial Italic */}
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1C1917] leading-[1.1]">
+              Designed Spaces for
+              <span className="block sm:inline sm:ml-3 font-editorial-italic font-normal text-[#9E763B]">
+                Refined Stays
+              </span>
             </h2>
           </div>
 
-          <div className="mt-4 sm:mt-0">
-            <button
+          {/* Right: Subtitle Description + Pill Button */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5 lg:max-w-lg">
+            <p className="font-body text-xs sm:text-sm text-[#78716C] leading-relaxed">
+              Well-designed spaces that combine comfort, royal Mewari elegance, and a peaceful setting to support rest and relaxation throughout your stay.
+            </p>
+
+            {/* <button
+              id="rooms-explore-spaces-btn"
               onClick={() => onEnquireRoom('Any Room')}
-              className="inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-[0.14em] text-[#666666] hover:text-[#C59B51] transition-colors font-medium group"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-[#9E763B] hover:bg-[#825E29] text-white text-xs uppercase tracking-[0.16em] font-sans font-semibold rounded-full shadow-sm hover:shadow-md transition-all duration-300 flex-shrink-0 group"
             >
-              <span>View All Suites</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+              <span>Explore Spaces</span>
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button> */}
           </div>
         </div>
 
-        {/* 4 Cards Grid - Luxora Card Style */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 4 Cards in 2x2 Grid (Exact Orrivaa Layout) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
           {ROOMS.map((room) => {
-            const isFav = favorites[room.id] || false;
+            const displayName = getRoomDisplayName(room);
+            const bedLabel = getRoomBedLabel(room);
+            const personLabel = getRoomPersonLabel(room);
+
             return (
               <div
                 key={room.id}
-                onClick={() => (onViewRoomPage ? onViewRoomPage(room.id) : setSelectedRoom(room))}
-                className="group cursor-pointer bg-white rounded-2xl border border-[#EAE4D9] overflow-hidden shadow-xs hover:shadow-xl hover:border-[#D5CABE] transition-all duration-300 flex flex-col justify-between"
+                onClick={() => handleCardClick(room)}
+                className="group cursor-pointer flex flex-col space-y-4"
               >
-                {/* Image Container with Badge & Heart */}
-                <div>
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#F0ECE1]">
-                    <img
-                      src={room.image}
-                      alt={room.name}
-                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                    />
+                {/* Image Container with Rounded Corners & Floating Price Pill */}
+                <div className="relative aspect-[16/10] rounded-2xl sm:rounded-3xl overflow-hidden bg-[#E8E2D9] shadow-sm border border-[#E8E2D9]">
+                  <img
+                    src={room.image}
+                    alt={`${displayName} at Hotel Mewari Villa`}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
 
-                    {/* Badge top-left */}
-                    <div className="absolute top-3.5 left-3.5 bg-[#C59B51] text-white text-[9px] uppercase tracking-widest font-sans font-bold px-2.5 py-1 rounded-md shadow-xs">
-                      {badges[room.id] || 'EXCLUSIVE'}
-                    </div>
+                  {/* Gradient bottom shadow for badge contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
 
-                    {/* Favorite Heart top-right */}
-                    <button
-                      onClick={(e) => toggleFavorite(room.id, e)}
-                      aria-label="Save to favorites"
-                      className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#404040] hover:text-rose-500 transition-colors shadow-xs"
-                    >
-                      <Heart
-                        className={`w-4 h-4 transition-transform active:scale-125 ${isFav ? 'fill-rose-500 text-rose-500' : ''
-                          }`}
-                      />
-                    </button>
+                  {/* Floating Price Pill (Bottom-Right, exactly as in Orrivaa design) */}
+                  <div className="absolute bottom-4 right-4 bg-black/65 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-white shadow-md">
+                    <span className="font-sans text-xs sm:text-[13px] font-semibold tracking-wide">
+                      {room.startingPrice}
+                    </span>
+                    <span className="text-[10px] font-sans text-white/80 ml-1">/Night</span>
+                  </div>
+                </div>
+
+                {/* Card Meta & Title Underneath (Clean, uncluttered, pure luxury) */}
+                <div className="flex items-center justify-between px-1">
+                  <div>
+                    <h3 className="font-serif text-xl sm:text-2xl font-normal text-[#1C1917] group-hover:text-[#9E763B] transition-colors">
+                      {displayName}
+                    </h3>
+                    <p className="text-[11px] font-sans text-[#78716C] mt-0.5">
+                      {room.name} · {room.view.includes('Lake') ? 'Lake Pichola Vista' : 'Courtyard Sanctuary'}
+                    </p>
                   </div>
 
-                  {/* Body Content */}
-                  <div className="p-5">
-                    <div className="flex items-baseline justify-between mb-1.5">
-                      <h3 className="font-serif text-lg font-medium text-[#171717] group-hover:text-[#C59B51] transition-colors leading-snug">
-                        {room.name}
-                      </h3>
-                      {/* <span className="text-[11px] text-[#C59B51] font-sans font-medium group-hover:underline">
-                        View Page →
-                      </span> */}
+                  <div className="flex items-center space-x-3 text-xs font-sans text-[#78716C]">
+                    <div className="flex items-center space-x-1">
+                      <Bed className="w-3.5 h-3.5 text-[#9E763B]" />
+                      <span>{bedLabel}</span>
                     </div>
-
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-[11px] font-sans text-[#737373] flex items-center">
-                        Lake Pichola, Udaipur
-                      </p>
-                      <div className="text-right">
-                        <span className="font-serif text-base font-bold text-[#171717]">
-                          {room.startingPrice}
-                        </span>
-                        <span className="text-[10px] font-sans text-[#737373] ml-1">/ night</span>
-                      </div>
-                    </div>
-
-                    {/* Specs / Amenities Mini Row */}
-                    <div className="pt-3 border-t border-[#F0ECE1] grid grid-cols-3 gap-2 text-[#666666] text-[11px] font-sans">
-                      <div className="flex items-center space-x-1">
-                        <Bed className="w-3.5 h-3.5 text-[#C59B51]" />
-                        <span className="truncate">{room.id.includes('triple') ? '3 Beds' : 'King'}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Bath className="w-3.5 h-3.5 text-[#C59B51]" />
-                        <span>Ensuite</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Maximize className="w-3.5 h-3.5 text-[#C59B51]" />
-                        <span>{room.size}</span>
-                      </div>
+                    <span className="text-[#D4CEBF]">·</span>
+                    <div className="flex items-center space-x-1">
+                      <Users className="w-3.5 h-3.5 text-[#9E763B]" />
+                      <span>{personLabel}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Card Action Buttons */}
-                <div className="p-5 pt-0 flex items-center space-x-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEnquireRoom(room.name);
-                    }}
-                    className="flex-1 py-2.5 bg-[#C59B51] hover:bg-[#B3873E] text-white text-[11px] uppercase tracking-wider font-sans font-semibold rounded-lg transition-colors text-center"
-                  >
-                    Book Stay
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (onViewRoomPage) {
-                        onViewRoomPage(room.id);
-                      } else {
-                        setSelectedRoom(room);
-                      }
-                    }}
-                    className="p-2.5 border border-[#EAE4D9] hover:border-[#C59B51] hover:bg-[#FAF8F5] text-[#171717] rounded-lg transition-colors flex items-center justify-center"
-                    title="View single room page"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Carousel Pagination Indicator */}
-        <div className="mt-10 flex items-center justify-center space-x-2">
-          <div className="w-6 h-1 bg-[#C59B51] rounded-full" />
-          <div className="w-2 h-1 bg-[#D8CEBE] rounded-full" />
-          <div className="w-2 h-1 bg-[#D8CEBE] rounded-full" />
-        </div>
-
       </div>
 
-      {/* Modal */}
+      {/* Detail Modal Fallback */}
       {selectedRoom && (
         <RoomModal
           room={selectedRoom}

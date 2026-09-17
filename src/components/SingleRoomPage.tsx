@@ -64,6 +64,7 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState('');
 
   // Scroll to top when room changes
   useEffect(() => {
@@ -115,14 +116,54 @@ export const SingleRoomPage: React.FC<SingleRoomPageProps> = ({
     setTimeout(() => setCopiedLink(false), 2200);
   };
 
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow navigation, deletion, tab, and copy/paste shortcuts
+    if (
+      ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key) ||
+      (e.ctrlKey || e.metaKey)
+    ) {
+      return;
+    }
+    // Block any non-digit character (strictly 0-9 only)
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Strip out all non-digits and cap strictly at 10 digits
+    const numericOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setGuestPhone(numericOnly);
+    setFormError('');
+  };
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!guestName.trim() || guestName.trim().length < 2) {
+      setFormError('Please enter your full name (at least 2 characters).');
+      return;
+    }
+    const phoneDigits = guestPhone.replace(/\D/g, '');
+    if (!phoneDigits) {
+      setFormError('Please enter your 10-digit mobile number (numbers only).');
+      return;
+    }
+    if (phoneDigits.length !== 10) {
+      setFormError('Please enter a valid 10-digit mobile number (exactly 10 digits required).');
+      return;
+    }
+    if (guestEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail.trim())) {
+      setFormError('Please enter a valid email address.');
+      return;
+    }
+
     setIsSubmitting(true);
+    setFormError('');
 
     await sendBookingInquiry({
       source: `Single Room Page (${room.name})`,
       guestName: guestName,
-      guestPhone: guestPhone,
+      guestPhone: `+91 ${guestPhone}`,
       guestEmail: guestEmail,
       roomPreference: room.name,
       checkInDate: checkInDate,
@@ -584,6 +625,12 @@ Please let me know room availability and best direct booking tariff.`;
                 </div>
               ) : (
                 <form onSubmit={handleFormSubmit} className="space-y-3">
+                  {formError && (
+                    <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-sans rounded-lg">
+                      {formError}
+                    </div>
+                  )}
+
                   {/* Name Input */}
                   <div>
                     <input
@@ -597,20 +644,29 @@ Please let me know room availability and best direct booking tariff.`;
                   </div>
 
                   {/* Phone with Country Code (+91) */}
-                  <div className="flex rounded-lg border border-[#E0D9CC] overflow-hidden focus-within:border-[#C59B51] transition-colors bg-white">
-                    <div className="px-3 py-2.5 bg-[#FAF8F5] border-r border-[#E0D9CC] text-xs font-sans text-[#404040] flex items-center space-x-1 shrink-0 select-none">
-                      <span>🇮🇳</span>
-                      <span>+91</span>
-                      <span className="text-[10px] text-[#737373]">∨</span>
+                  <div>
+                    <div className="flex rounded-lg border border-[#E0D9CC] overflow-hidden focus-within:border-[#C59B51] transition-colors bg-white">
+                      <div className="px-3 py-2.5 bg-[#FAF8F5] border-r border-[#E0D9CC] text-xs font-sans text-[#404040] flex items-center space-x-1 shrink-0 select-none">
+                        <span>🇮🇳</span>
+                        <span>+91</span>
+                        <span className="text-[10px] text-[#737373]">∨</span>
+                      </div>
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9]{10}"
+                        maxLength={10}
+                        placeholder="98765 43210"
+                        value={guestPhone}
+                        onKeyDown={handlePhoneKeyDown}
+                        onChange={handlePhoneChange}
+                        required
+                        className="w-full px-3.5 py-2.5 bg-white text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-none"
+                      />
                     </div>
-                    <input
-                      type="tel"
-                      placeholder="Phone number"
-                      value={guestPhone}
-                      onChange={(e) => setGuestPhone(e.target.value)}
-                      required
-                      className="w-full px-3.5 py-2.5 bg-white text-xs font-sans text-[#171717] placeholder-[#999999] focus:outline-hidden"
-                    />
+                    <span className="text-[10px] text-[#78716C] font-sans mt-1 block">
+                      Numbers only · 10 digits
+                    </span>
                   </div>
 
                   {/* Email Input */}

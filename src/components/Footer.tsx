@@ -25,6 +25,11 @@ export const Footer: React.FC = () => {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    if (href.startsWith('#/')) {
+      window.location.hash = href;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -114,29 +119,34 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Col 3: Experiences & Dining (2 cols) */}
+          {/* Col 3: Explore & Dining (2 cols) */}
           <div className="lg:col-span-2">
             <span className="text-xs uppercase tracking-wider font-sans text-[#171717] font-semibold block mb-4">
-              Experiences
+              Explore Udaipur
             </span>
             <ul className="space-y-2 text-xs font-sans text-[#666666]">
               <li>
-                <a href="#dining" onClick={(e) => handleNavClick(e, '#dining')} className="hover:text-[#C59B51] transition-colors">
+                <a href="#/explore" onClick={(e) => handleNavClick(e, '#/explore')} className="hover:text-[#9E763B] transition-colors">
+                  Heritage Guide &amp; Sights
+                </a>
+              </li>
+              <li>
+                <a href="#dining" onClick={(e) => handleNavClick(e, '#dining')} className="hover:text-[#9E763B] transition-colors">
                   Jalsa Rooftop Dining
                 </a>
               </li>
               <li>
-                <a href="#experiences" onClick={(e) => handleNavClick(e, '#experiences')} className="hover:text-[#C59B51] transition-colors">
+                <a href="#/explore" onClick={(e) => handleNavClick(e, '#/explore')} className="hover:text-[#9E763B] transition-colors">
                   Lake Pichola Boat Ride
                 </a>
               </li>
               <li>
-                <a href="#experiences" onClick={(e) => handleNavClick(e, '#experiences')} className="hover:text-[#C59B51] transition-colors">
-                  City Palace Excursion
+                <a href="#/gallery" onClick={(e) => handleNavClick(e, '#/gallery')} className="hover:text-[#9E763B] transition-colors">
+                  Photo Gallery
                 </a>
               </li>
               <li>
-                <a href="#about" onClick={(e) => handleNavClick(e, '#about')} className="hover:text-[#C59B51] transition-colors">
+                <a href="#about" onClick={(e) => handleNavClick(e, '#about')} className="hover:text-[#9E763B] transition-colors">
                   Heritage Story
                 </a>
               </li>

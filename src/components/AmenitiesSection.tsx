@@ -1,96 +1,98 @@
 import React from 'react';
 import {
-  Wifi,
-  Wind,
-  Bed,
-  BellRing,
+  UserCheck,
   Utensils,
-  Tv,
-  ShieldCheck,
-  ArrowUpDown,
-  Sparkles,
-  Layers,
-  Briefcase,
   Car,
+  Sun,
+  Coffee,
+  Wifi,
+  Sparkles,
+  Ship,
 } from 'lucide-react';
-import { AMENITIES, HOTEL_INFO } from '../data/hotelData';
+import { HOTEL_INFO } from '../data/hotelData';
 
 export const AmenitiesSection: React.FC = () => {
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Wifi':
-        return <Wifi className="w-4 h-4 stroke-[1.5]" />;
-      case 'Wind':
-        return <Wind className="w-4 h-4 stroke-[1.5]" />;
-      case 'Bed':
-        return <Bed className="w-4 h-4 stroke-[1.5]" />;
-      case 'BellRing':
-        return <BellRing className="w-4 h-4 stroke-[1.5]" />;
-      case 'Utensils':
-        return <Utensils className="w-4 h-4 stroke-[1.5]" />;
-      case 'Tv':
-        return <Tv className="w-4 h-4 stroke-[1.5]" />;
-      case 'ShieldCheck':
-        return <ShieldCheck className="w-4 h-4 stroke-[1.5]" />;
-      case 'ArrowUpDown':
-        return <ArrowUpDown className="w-4 h-4 stroke-[1.5]" />;
-      case 'Sparkles':
-        return <Sparkles className="w-4 h-4 stroke-[1.5]" />;
-      case 'CheckSquare':
-        return <Layers className="w-4 h-4 stroke-[1.5]" />;
-      case 'Luggage':
-        return <Briefcase className="w-4 h-4 stroke-[1.5]" />;
-      case 'Car':
-        return <Car className="w-4 h-4 stroke-[1.5]" />;
-      default:
-        return <Sparkles className="w-4 h-4 stroke-[1.5]" />;
-    }
-  };
+  const facilities = [
+    {
+      id: 'staff',
+      name: '24/7 Staff & Butler',
+      icon: <UserCheck className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'restaurant',
+      name: 'Jalsa Rooftop Dining',
+      icon: <Utensils className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'parking',
+      name: 'Dedicated Car Parking',
+      icon: <Car className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'sundeck',
+      name: 'Lakefront Sun Deck',
+      icon: <Sun className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'courtyard',
+      name: 'Heritage Lounge',
+      icon: <Coffee className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'wifi',
+      name: 'High-Speed Wi-Fi',
+      icon: <Wifi className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'laundry',
+      name: 'Valet & Laundry',
+      icon: <Sparkles className="w-5 h-5 stroke-[1.4]" />,
+    },
+    {
+      id: 'boat',
+      name: 'Lake Pichola Cruises',
+      icon: <Ship className="w-5 h-5 stroke-[1.4]" />,
+    },
+  ];
 
   return (
-    <section className="py-20 md:py-24 bg-white relative border-b border-[#EAE4D9]">
+    <section className="py-20 md:py-24 bg-white relative border-b border-[#E8E2D9]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
 
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center space-x-2 mb-2.5 justify-center">
-            <span className="w-5 h-px bg-[#C59B51]" />
-            <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#C59B51] font-semibold">
-              Guest Comfort &amp; Privileges
+        {/* Section Header: Minimalist Eyebrow & Title */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="inline-flex items-center space-x-2 mb-3 justify-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
+            <span className="text-[11px] font-sans uppercase tracking-[0.24em] text-[#9E763B] font-semibold">
+              Facilities Available to Guests
             </span>
-            <span className="w-5 h-px bg-[#C59B51]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9E763B]" />
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl font-normal text-[#171717] mb-3">
-            Curated Hotel Amenities
+          <h2 className="font-serif text-3xl sm:text-4xl font-normal text-[#1C1917]">
+            Thoughtfully Curated For Comfort
           </h2>
-          <p className="font-body text-xs sm:text-sm text-[#666666] leading-relaxed">
-            Thoughtful comforts and verified facilities provided across Mewari Villa to ensure an effortless, relaxing heritage stay.
-          </p>
         </div>
 
-        {/* 12 Verified Amenities Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
-          {AMENITIES.map((amenity) => (
+        {/* Minimalist Outlined Icon Grid (Direct match to reference design) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 sm:gap-4 mb-12">
+          {facilities.map((item) => (
             <div
-              key={amenity.id}
-              className="p-5 bg-[#FAF8F5] rounded-xl border border-[#EAE4D9] hover:border-[#C59B51] hover:bg-white hover:shadow-md transition-all duration-300 flex flex-col items-center text-center group"
+              key={item.id}
+              className="flex flex-col items-center text-center p-3 sm:p-2 group cursor-default"
             >
-              <div className="w-10 h-10 rounded-full bg-white border border-[#EAE4D9] flex items-center justify-center text-[#C59B51] group-hover:bg-[#C59B51] group-hover:text-white transition-colors mb-3 shadow-xs">
-                {getIcon(amenity.iconName)}
+              <div className="w-14 h-14 rounded-full bg-[#FAF8F5] border border-[#E8E2D9] group-hover:border-[#9E763B] group-hover:bg-[#FAF6F0] flex items-center justify-center text-[#9E763B] transition-all duration-300 mb-3 shadow-xs group-hover:shadow-sm group-hover:-translate-y-0.5">
+                {item.icon}
               </div>
-              <h3 className="font-serif text-sm text-[#171717] font-semibold mb-1">
-                {amenity.name}
-              </h3>
-              <p className="text-[11px] font-body text-[#737373] leading-tight">
-                {amenity.description}
-              </p>
+              <span className="text-xs font-sans text-[#44403C] group-hover:text-[#1C1917] font-medium transition-colors leading-tight">
+                {item.name}
+              </span>
             </div>
           ))}
         </div>
 
-        {/* Parking Clarification Notice */}
-        <div className="max-w-xl mx-auto p-4 bg-[#FAF8F5] rounded-xl border border-[#EAE4D9] text-center text-xs font-sans text-[#666666]">
-          <span className="font-semibold text-[#171717]">Dedicated Parking:</span> {HOTEL_INFO.parkingNote}. Luggage assistance gladly provided upon arrival.
+        {/* Discreet Parking & Arrival Notice */}
+        <div className="max-w-xl mx-auto p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E2D9] text-center text-xs font-sans text-[#78716C]">
+          <span className="font-semibold text-[#1C1917]">Dedicated Parking:</span> {HOTEL_INFO.parkingNote}. Valet luggage assistance provided gladly upon your arrival.
         </div>
 
       </div>

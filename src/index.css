@@ -15,28 +15,30 @@
     --color-border:       #EAE4D9;
     --color-border-light: #F2ECE1;
 
-    --font-heading: 'Forum', Georgia, serif;
+    --font-heading: 'Cormorant Garamond', 'Forum', Georgia, serif;
+    --font-cormorant: 'Cormorant Garamond', Georgia, serif;
     --font-forum:   'Forum', Georgia, serif;
-    --font-serif:   'Forum', Georgia, serif;
+    --font-serif:   'Cormorant Garamond', 'Forum', Georgia, serif;
     --font-lora:    'Lora', Georgia, serif;
     --font-body:    'Lora', Georgia, serif;
     --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
   html {
-    background-color: #FFFFFF;
-    color: #171717;
+    background-color: #FAF8F5;
+    color: #1C1917;
   }
 
   body {
     font-family: 'Lora', Georgia, serif;
-    background-color: #FFFFFF;
-    color: #171717;
+    background-color: #FAF8F5;
+    color: #1C1917;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Forum', Georgia, serif;
+    font-family: 'Cormorant Garamond', 'Forum', Georgia, serif;
     color: inherit;
+    letter-spacing: -0.01em;
   }
 
   p {
@@ -46,9 +48,22 @@
 
 h1, h2, h3, h4, h5, h6,
 .font-serif,
-.font-forum,
 .font-heading {
+  font-family: 'Cormorant Garamond', 'Forum', Georgia, serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-forum {
   font-family: 'Forum', Georgia, serif;
+}
+
+.font-editorial-italic {
+  font-family: 'Cormorant Garamond', 'Lora', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
 }
 
 p,
