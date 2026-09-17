@@ -60,20 +60,20 @@ export const Footer: React.FC = () => {
             {/* Social Icons */}
             <div className="flex items-center space-x-2 pt-2">
               <a
-                href="#"
+                href="https://www.instagram.com/mewarivillahotel"
                 className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#525252] hover:text-[#C59B51] hover:border-[#C59B51] transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/mewarivilla/"
                 className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#525252] hover:text-[#C59B51] hover:border-[#C59B51] transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE4D9] flex items-center justify-center text-[#525252] hover:text-[#C59B51] hover:border-[#C59B51] transition-colors"
                 aria-label="LinkedIn"
@@ -86,7 +86,7 @@ export const Footer: React.FC = () => {
                 aria-label="YouTube"
               >
                 <Youtube className="w-4 h-4" />
-              </a>
+              </a> */}
             </div>
           </div>
 

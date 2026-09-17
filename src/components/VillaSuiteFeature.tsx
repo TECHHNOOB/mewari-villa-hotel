@@ -7,46 +7,50 @@ interface VillaSuiteFeatureProps {
   onViewRoomPage?: (roomId: string) => void;
 }
 
-// Curated verified guest testimonials matching reference design
+// 100% Real 5-Star Reviews from Google Maps for Hotel Mewari Villa Udaipur
 const TESTIMONIALS = [
   {
     id: 't1',
-    title: 'A Calm, Comfortable Stay',
+    // title: 'True Hospitality & Lake View Luxury',
     quote:
-      'From check-in to check-out, everything felt smooth and well-organized. The room was quiet, the lighting was relaxing, and the shared spaces were easy to enjoy without feeling crowded.',
-    author: 'Emily Carter',
-    location: 'From USA',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80',
+      'Had a wonderful stay here, everything was great from ambience to food. One of the most special things about this property is they represent true hospitality and accepted all custom requests. Since we booked 3 rooms, they upgraded one room so all rooms could be together in a dedicated corner. Everyone should consider this place who wants a lake view hotel with luxury benefits in close vicinity of all major points in old Udaipur.',
+    author: 'TARUN JAIN',
+    location: 'Google Maps Review · Family Stay',
+    initials: 'TJ',
+    // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
     rating: 5,
   },
   {
     id: 't2',
-    title: 'Great for a Weekend Break',
+    // title: 'Superb Service & Peaceful Lake Stay',
     quote:
-      'We stayed for a short getaway and appreciated the simple layout and clean details throughout the property. The dining area was welcoming, and the overall atmosphere felt calm and unhurried.',
-    author: 'Michael Thompson',
-    location: 'From United Kingdom',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+      'Stayed here recently and had an amazing experience! The service was absolutely superb, rooms were clean and well-maintained, and the view was just stunning. Felt completely safe and comfortable, especially as a girl traveler. Highly recommend this place for a peaceful and secure stay!',
+    author: 'Amisha Patel',
+    location: 'Google Maps Review · Solo Traveler',
+    initials: 'AP',
+    // avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
     rating: 5,
   },
   {
     id: 't3',
-    title: 'Unmatched Lake Views & Walking Proximity',
+    // title: 'Unmatched Lake Views & Walking Proximity',
     quote:
       'We had a wonderful stay at this hotel. Rooms are spacious, clean and friendly staffs. The breakfast was good. Location wise it is at the centre, where the City Palace, Ambrai Ghat, Bagore ki Haveli, etc all are at walking distance. Overall we had wonderful stay and thanks to the owner who is extremely friendly.',
     author: 'Suman Khadka Chhetry',
-    location: 'Google Verified Review',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+    location: 'Google Maps Review · Verified Stay',
+    initials: 'SK',
+    // avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
     rating: 5,
   },
   {
     id: 't4',
-    title: 'Ideal for Family Stays & Celebrations',
+    // title: 'Beautiful Architecture & Great Food',
     quote:
-      'This was our favorite stay in Udaipur. Authentic royal Mewari architecture, prompt room service, and stunning lake views from the rooftop. The staff helped arrange our boat ride and made us feel truly at home.',
-    author: 'David Reynolds',
-    location: 'From Australia',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
+      'Loved everything about the hotel. So beautifully designed and really helpful owner and trustworthy. Loved the food here along with their huge portions. I loved the rooms and cleanliness. The hotel architecture is just beautiful. Coming here next time I come to Udaipur!',
+    author: 'Lujaw Manandhar',
+    location: 'Google Maps Review · Family Vacation',
+    initials: 'LM',
+    // avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80',
     rating: 5,
   },
 ];
@@ -191,11 +195,17 @@ export const VillaSuiteFeature: React.FC<VillaSuiteFeatureProps> = ({ onEnquireS
                 <div className="pt-4 border-t border-[#E8E2D9] flex items-center justify-between">
                   {/* Author Avatar & Name */}
                   <div className="flex items-center space-x-3">
-                    <img
-                      src={testimonial.avatar}
-                      alt={testimonial.author}
-                      className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-xs"
-                    />
+                    {testimonial.avatar ? (
+                      <img
+                        src={testimonial.avatar}
+                        alt={testimonial.author}
+                        className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-xs"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#E8E2D9] text-[#9E763B] font-serif font-semibold text-sm flex items-center justify-center shadow-xs">
+                        {testimonial.initials || testimonial.author.charAt(0)}
+                      </div>
+                    )}
                     <div>
                       <h4 className="font-sans text-xs sm:text-sm font-semibold text-[#1C1917] leading-tight">
                         {testimonial.author}
