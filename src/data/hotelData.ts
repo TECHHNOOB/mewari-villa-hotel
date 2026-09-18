@@ -18,55 +18,55 @@ export const HOTEL_INFO = {
   googleMapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3628.136!2d73.6806449!3d24.584363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e567b36897d7%3A0xca74a97184503f5!2sHotel%20Mewari%20Villa%20Udaipur%20%7C%20Lake%20View%20Hotel%20in%20Udaipur!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin',
 };
 
-// 100% REAL PHOTOGRAPHS FROM MEWARIVILLA.COM
+// 100% REAL LOCAL PHOTOGRAPHS STORED IN ASSETS
 export const REAL_HOTEL_IMAGES = {
   // Hero & Exterior
-  heroExterior: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/IMG-20230425-WA0006.jpg',
-  lakeViewRooftop: 'https://www.mewarivilla.com/wp-content/uploads/2024/08/IMG_3812.jpg',
-  propertyCourtyard: 'https://www.mewarivilla.com/wp-content/uploads/2024/12/Optimized-DW7A7236.jpg',
-  heritageFacade: 'https://www.mewarivilla.com/wp-content/uploads/2024/11/IMG-20190504-WA0029.jpg',
-  heritageArches: 'https://www.mewarivilla.com/wp-content/uploads/2024/11/IMG-20190504-WA0025.jpg',
-  villaPicholaLake: 'https://www.mewarivilla.com/wp-content/uploads/2025/08/IMG_6584.jpg',
+  heroExterior: '/assets/images/hero_exterior.jpg',
+  lakeViewRooftop: '/assets/images/lake_view_rooftop.jpg',
+  propertyCourtyard: '/assets/images/property_courtyard.jpg',
+  heritageFacade: '/assets/images/heritage_facade.jpg',
+  heritageArches: '/assets/images/heritage_arches.jpg',
+  villaPicholaLake: '/assets/images/villa_pichola_lake.jpg',
 
   // Rooms
-  villaSuiteMain: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/r1-1-scaled.jpg',
-  villaSuiteDetail: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/Villa-Suit-301-5-scaled-1.jpg',
-  villaSuiteWindow: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R1-1-2-scaled.jpg',
-  villaSuiteBath: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R3-5-1-scaled.jpg',
-  villaSuiteSitting: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R3-4-1-scaled.jpg',
+  villaSuiteMain: '/assets/images/villa_suite_main.jpg',
+  villaSuiteDetail: '/assets/images/villa_suite_detail.jpg',
+  villaSuiteWindow: '/assets/images/villa_suite_window.jpg',
+  villaSuiteBath: '/assets/images/villa_suite_bath.jpg',
+  villaSuiteSitting: '/assets/images/villa_suite_sitting.jpg',
 
-  superDeluxeLakeMain: 'https://www.mewarivilla.com/wp-content/uploads/2024/02/R7-2-scaled.jpg',
-  superDeluxeLakeWindow: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R7-4-scaled.jpg',
-  superDeluxeLakeBed: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R7-1-scaled.jpg',
-  superDeluxeLakeBalcony: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R9-1-1-scaled.jpg',
+  superDeluxeLakeMain: '/assets/images/super_deluxe_lake_main.jpg',
+  superDeluxeLakeWindow: '/assets/images/super_deluxe_lake_window.jpg',
+  superDeluxeLakeBed: '/assets/images/super_deluxe_lake_bed.jpg',
+  superDeluxeLakeBalcony: '/assets/images/super_deluxe_lake_balcony.jpg',
 
-  superDeluxeTripleMain: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/R10-2-scaled.jpg',
-  superDeluxeTripleSpace: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R10-1-scaled.jpg',
-  superDeluxeTripleBeds: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R8-1-scaled.jpg',
-  superDeluxeTripleBath: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R8-2-scaled.jpg',
+  superDeluxeTripleMain: '/assets/images/super_deluxe_triple_main.jpg',
+  superDeluxeTripleSpace: '/assets/images/super_deluxe_triple_space.jpg',
+  superDeluxeTripleBeds: '/assets/images/super_deluxe_triple_beds.jpg',
+  superDeluxeTripleBath: '/assets/images/super_deluxe_triple_bath.jpg',
 
-  deluxeNonLakeMain: 'https://www.mewarivilla.com/wp-content/uploads/2024/02/R4-2-scaled.jpg',
-  deluxeNonLakeInterior: 'https://www.mewarivilla.com/wp-content/uploads/2024/02/R4-1-scaled.jpg',
-  deluxeNonLakeComfort: 'https://www.mewarivilla.com/wp-content/uploads/2024/02/R5-1-scaled.jpg',
-  deluxeNonLakeTwin: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/Delux-Double-Twin-AC-306-scaled-1.jpg',
+  deluxeNonLakeMain: '/assets/images/deluxe_non_lake_main.jpg',
+  deluxeNonLakeInterior: '/assets/images/deluxe_non_lake_interior.jpg',
+  deluxeNonLakeComfort: '/assets/images/deluxe_non_lake_comfort.jpg',
+  deluxeNonLakeTwin: '/assets/images/deluxe_non_lake_twin.jpg',
 
   // Jalsa Restaurant
-  jalsaFoodView: 'https://www.mewarivilla.com/wp-content/uploads/2025/01/Snapinsta.app_423211764_1363532347864459_450844377585156776_n_1080-1.jpg',
-  jalsaRooftopSeating: 'https://www.mewarivilla.com/wp-content/uploads/2025/01/Snapinsta.app_427550561_2311833955680701_1391268676147864128_n_1080-1.jpg',
-  jalsaLakeSunset: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/IMG_20230423_194919-scaled.jpg',
-  jalsaTableSetting: 'https://www.mewarivilla.com/wp-content/uploads/2025/05/Snapinsta.app_450048225_18055654954645659_1359924264245492610_n_1080-1.jpg',
+  jalsaFoodView: '/assets/images/jalsa_food_view.jpg',
+  jalsaRooftopSeating: '/assets/images/jalsa_rooftop_seating.jpg',
+  jalsaLakeSunset: '/assets/images/jalsa_lake_sunset.jpg',
+  jalsaTableSetting: '/assets/images/jalsa_table_setting.jpg',
 
   // Experiences & Udaipur
-  lakeBoatRide: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/Snapinsta.app_172561095_457961372202557_3832454611272493177_n_1080.jpg',
-  royalPalaceUdaipur: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/Snapinsta.app_167584584_277134223870309_3186697887748445580_n_1080.jpg',
-  oldCityBazaar: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/IMG-20231016-WA0015.jpg',
-  lakeViewTwilight: 'https://www.mewarivilla.com/wp-content/uploads/2024/07/2024-03-29.jpg',
+  lakeBoatRide: '/assets/images/lake_boat_ride.jpg',
+  royalPalaceUdaipur: '/assets/images/royal_palace_udaipur.jpg',
+  oldCityBazaar: '/assets/images/old_city_bazaar.jpg',
+  lakeViewTwilight: '/assets/images/lake_view_twilight.jpg',
 
   // Interiors & Details
-  interiorCorridor: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R2-1-1-scaled.jpg',
-  interiorLobby: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R2-2-1-scaled.jpg',
-  interiorBalcony: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R3-1-1-scaled.jpg',
-  bathroomDetail: 'https://www.mewarivilla.com/wp-content/uploads/2024/03/R2-4-1-scaled.jpg',
+  interiorCorridor: '/assets/images/interior_corridor.jpg',
+  interiorLobby: '/assets/images/interior_lobby.jpg',
+  interiorBalcony: '/assets/images/interior_balcony.jpg',
+  bathroomDetail: '/assets/images/bathroom_detail.jpg',
 };
 
 export const ROOMS: Room[] = [

@@ -358,16 +358,14 @@ Please let me know room availability and best direct booking tariff.`;
 
                   <button
                     onClick={() => setIsSaved(!isSaved)}
-                    className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 border rounded-lg text-xs font-sans transition-colors ${
-                      isSaved
+                    className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 border rounded-lg text-xs font-sans transition-colors ${isSaved
                         ? 'border-[#C59B51] text-[#C59B51] bg-[#FAF8F5]'
                         : 'border-[#EAE4D9] text-[#404040] hover:border-[#C59B51] hover:text-[#C59B51] bg-white'
-                    }`}
+                      }`}
                   >
                     <Heart
-                      className={`w-3.5 h-3.5 ${
-                        isSaved ? 'fill-[#C59B51] text-[#C59B51]' : ''
-                      }`}
+                      className={`w-3.5 h-3.5 ${isSaved ? 'fill-[#C59B51] text-[#C59B51]' : ''
+                        }`}
                     />
                     <span>{isSaved ? 'Saved' : 'Save'}</span>
                   </button>
@@ -561,7 +559,7 @@ Please let me know room availability and best direct booking tariff.`;
                 </div>
                 <div>
                   <h3 className="font-serif text-sm font-semibold text-[#171717]">
-                    Mewari Villa Concierge
+                    Hotel Mewari Villa
                   </h3>
                   <p className="text-[11px] font-sans text-[#737373]">
                     Heritage Hospitality Team
@@ -748,7 +746,7 @@ Please let me know room availability and best direct booking tariff.`;
                       className="mt-0.5 rounded border-[#C59B51] text-[#C59B51] focus:ring-0"
                     />
                     <span>
-                      I agree to be contacted by Mewari Villa concierge via WhatsApp, phone, or email.
+                      I agree to be contacted by Mewari Villa via WhatsApp, phone, or email.
                     </span>
                   </label>
 
@@ -932,11 +930,10 @@ Please let me know room availability and best direct booking tariff.`;
               <button
                 key={idx}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`relative w-16 sm:w-20 aspect-[16/10] rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
-                  activeImageIndex === idx
+                className={`relative w-16 sm:w-20 aspect-[16/10] rounded-lg overflow-hidden shrink-0 border-2 transition-all ${activeImageIndex === idx
                     ? 'border-[#C59B51] scale-105'
                     : 'border-transparent opacity-50 hover:opacity-100'
-                }`}
+                  }`}
               >
                 <img
                   src={photo}
