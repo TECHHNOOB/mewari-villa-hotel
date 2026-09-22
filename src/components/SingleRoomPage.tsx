@@ -601,7 +601,7 @@ Please let me know room availability and best direct booking tariff.`;
                     Inquiry Sent Successfully!
                   </h4>
                   <p className="text-xs font-sans text-[#525252] leading-relaxed">
-                    Your reservation details for <strong>{room.name}</strong> have been forwarded to our reservations team. We will review room availability and contact you shortly.
+                    Your reservation details for <strong>{room.name}</strong> have been forwarded to our reservations team at <strong>info@mewarivilla.com</strong>. We will review room availability and contact you shortly.
                   </p>
                   <div className="pt-2 space-y-2">
                     <a

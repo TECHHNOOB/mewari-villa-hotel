@@ -181,7 +181,7 @@ Notes: ${formData.message || 'None'}`;
               </h3>
 
               <p className="font-body text-xs sm:text-sm text-[#666666] mb-6 max-w-md mx-auto leading-relaxed">
-                Thank you for your enquiry. Our team will get back to you shortly with tailored availability for your stay at Mewari Villa.
+                Thank you for your enquiry. Your details have been delivered to our team at info@mewarivilla.com. We will get back to you shortly with tailored availability for your stay at Mewari Villa.
               </p>
 
               {/* Instant Action Buttons */}

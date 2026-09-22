@@ -203,7 +203,7 @@ Special Request: ${formData.message || 'None'}`;
                 Enquiry Sent
               </h3>
               <p className="font-body text-xs text-[#666666] mb-6 max-w-sm mx-auto leading-relaxed">
-                Thank you. Our reservations desk will get back to you promptly with availability for your requested dates.
+                Thank you! Your details have been sent to our reservations team (info@mewarivilla.com). We will get back to you promptly with availability for your requested dates.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xs mx-auto mb-6">
