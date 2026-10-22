@@ -7,7 +7,7 @@ export const HOTEL_INFO = {
   city: 'Udaipur, Rajasthan, India',
   address: 'Purohit Ka Khurra, Before Chandpole Parking, Udaipur, Rajasthan 313001, India',
   primaryPhone: '+91 9460447777',
-  secondaryPhone: '+91 8619845277',
+  secondaryPhone: '02942419736',
   whatsappNumber: '919460447777',
   email: 'info@mewarivilla.com',
   website: 'https://www.mewarivilla.com',
