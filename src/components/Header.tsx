@@ -7,6 +7,7 @@ interface HeaderProps {
   onNavigateHome?: () => void;
   onNavigateGallery?: () => void;
   onNavigateExplore?: () => void;
+  onNavigateBlogs?: () => void;
   isInnerPage?: boolean;
 }
 
@@ -15,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateHome,
   onNavigateGallery,
   onNavigateExplore,
+  onNavigateBlogs,
   isInnerPage = false,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,25 +33,32 @@ export const Header: React.FC<HeaderProps> = ({
   const navLinks = [
     { label: 'Home', href: '#hero-section' },
     { label: 'About Us', href: '#about' },
-    { label: 'Rooms & Suites', href: '#stay' },
-    { label: 'Dining', href: '#dining' },
+    { label: 'Rooms', href: '#stay' },
+    // { label: 'Dining', href: '#dining' },
     { label: 'Explore', href: '#/explore' },
     { label: 'Gallery', href: '#/gallery' },
+    { label: 'Blog', href: '#/blogs' },
     { label: 'Contact', href: '#contact' },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    if (href === '#/gallery') {
+    if (href === '#/gallery' || href === '/gallery') {
       if (onNavigateGallery) onNavigateGallery();
-      else window.location.hash = '#/gallery';
+      else window.history.pushState(null, '', '/gallery');
       return;
     }
 
-    if (href === '#/explore') {
+    if (href === '#/explore' || href === '/explore') {
       if (onNavigateExplore) onNavigateExplore();
-      else window.location.hash = '#/explore';
+      else window.history.pushState(null, '', '/explore');
+      return;
+    }
+
+    if (href === '#/blogs' || href === '#/blog' || href === '/blogs' || href === '/blog') {
+      if (onNavigateBlogs) onNavigateBlogs();
+      else window.history.pushState(null, '', '/blogs');
       return;
     }
 
@@ -71,11 +80,10 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header
         id="main-header"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          showSolidHeader
-            ? 'bg-[#FAF8F5]/95 backdrop-blur-md py-3.5 border-b border-[#E8E2D9] shadow-xs text-[#1C1917]'
-            : 'bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-white'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${showSolidHeader
+          ? 'bg-[#FAF8F5]/95 backdrop-blur-md py-3.5 border-b border-[#E8E2D9] shadow-xs text-[#1C1917]'
+          : 'bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-white'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
 
@@ -93,9 +101,8 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/mewari-villa-logo.png"
               alt="Hotel Mewari Villa"
-              className={`h-11 sm:h-13 w-auto object-contain transition-all duration-300 group-hover:scale-105 ${
-                !showSolidHeader ? 'brightness-0 invert drop-shadow-md' : ''
-              }`}
+              className={`h-11 sm:h-13 w-auto object-contain transition-all duration-300 group-hover:scale-105 ${!showSolidHeader ? 'brightness-0 invert drop-shadow-md' : ''
+                }`}
             />
           </a>
 
@@ -106,9 +113,8 @@ export const Header: React.FC<HeaderProps> = ({
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`text-[12px] tracking-[0.14em] uppercase font-sans font-medium transition-colors duration-300 relative py-1 hover:text-[#9E763B] ${
-                  showSolidHeader ? 'text-[#44403C]' : 'text-white/90 hover:text-white'
-                }`}
+                className={`text-[12px] tracking-[0.14em] uppercase font-sans font-medium transition-colors duration-300 relative py-1 hover:text-[#9E763B] ${showSolidHeader ? 'text-[#44403C]' : 'text-white/90 hover:text-white'
+                  }`}
               >
                 {link.label}
               </a>
@@ -119,13 +125,11 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="hidden sm:flex items-center space-x-5">
             <a
               href={`tel:${HOTEL_INFO.primaryPhone}`}
-              className={`flex items-center space-x-2 text-xs font-sans transition-colors ${
-                showSolidHeader ? 'text-[#57534E] hover:text-[#1C1917]' : 'text-white/80 hover:text-white'
-              }`}
+              className={`flex items-center space-x-2 text-xs font-sans transition-colors ${showSolidHeader ? 'text-[#57534E] hover:text-[#1C1917]' : 'text-white/80 hover:text-white'
+                }`}
             >
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-                showSolidHeader ? 'bg-[#FAF8F5] border border-[#E8E2D9] text-[#9E763B]' : 'bg-white/15 border border-white/20 text-white'
-              }`}>
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${showSolidHeader ? 'bg-[#FAF8F5] border border-[#E8E2D9] text-[#9E763B]' : 'bg-white/15 border border-white/20 text-white'
+                }`}>
                 <Phone className="w-3.5 h-3.5" />
               </div>
               <span className="font-medium tracking-wide">{HOTEL_INFO.primaryPhone}</span>
@@ -146,11 +150,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all ${
-                showSolidHeader
-                  ? 'text-[#1C1917] border-[#E8E2D9] bg-[#FAF8F5]'
-                  : 'text-white border-white/30 bg-black/30 backdrop-blur-xs'
-              }`}
+              className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all ${showSolidHeader
+                ? 'text-[#1C1917] border-[#E8E2D9] bg-[#FAF8F5]'
+                : 'text-white border-white/30 bg-black/30 backdrop-blur-xs'
+                }`}
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

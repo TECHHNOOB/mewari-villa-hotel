@@ -25,6 +25,24 @@ export const Footer: React.FC = () => {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    if (href === '#/blogs' || href === '/blogs') {
+      window.history.pushState(null, '', '/blogs');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (href === '#/gallery' || href === '/gallery') {
+      window.history.pushState(null, '', '/gallery');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (href === '#/explore' || href === '/explore') {
+      window.history.pushState(null, '', '/explore');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (href.startsWith('#/')) {
       window.location.hash = href;
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -143,6 +161,11 @@ export const Footer: React.FC = () => {
               <li>
                 <a href="#/gallery" onClick={(e) => handleNavClick(e, '#/gallery')} className="hover:text-[#9E763B] transition-colors">
                   Photo Gallery
+                </a>
+              </li>
+              <li>
+                <a href="#/blogs" onClick={(e) => handleNavClick(e, '#/blogs')} className="hover:text-[#9E763B] transition-colors">
+                  Blogs
                 </a>
               </li>
               <li>
